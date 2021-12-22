@@ -1,5 +1,4 @@
-﻿using System;
-using GiftingToDo.ViewModels;
+﻿using GiftingToDo.ViewModels;
 using GiftingToDo.Views;
 using Prism.Ioc;
 using Xamarin.Forms;
