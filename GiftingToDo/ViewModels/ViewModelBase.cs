@@ -1,4 +1,5 @@
-﻿using Prism.Mvvm;
+﻿using GiftingToDo.Helpers;
+using Prism.Mvvm;
 using Prism.Navigation;
 
 namespace GiftingToDo.ViewModels
@@ -6,10 +7,12 @@ namespace GiftingToDo.ViewModels
     public class ViewModelBase : BindableBase, INavigationAware, IDestructible
     {
         protected INavigationService NavigationService { get; private set; }
+        public IErrorHandler errorHandler { get; private set; }
 
-        public ViewModelBase(INavigationService navigationService)
+        public ViewModelBase(INavigationService navigationService, IErrorHandler errorHandler)
         {
             NavigationService = navigationService;
+            this.errorHandler = errorHandler;
         }
 
         private string _title;

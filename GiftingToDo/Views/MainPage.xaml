@@ -1,54 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GiftingToDo.Views.MainPage">
+             x:Class="GiftingToDo.Views.MainPage"
+             x:Name="RecieverListView">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*"/>
             <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Button Text="Add Someone to give a gift to"
-                Grid.Row="0"
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Command="{Binding AddPersonBtn}"/>
-        <Entry Keyboard="Text"
-               Placeholder="First name"
-               Text="{Binding FirstNameEntry}"
-               Grid.Row="1"
-               Grid.Column="0"
-               Grid.ColumnSpan="2"/>
         <RefreshView IsRefreshing="{Binding IsBusy}"
                      Command="{Binding RefreshListCmd}"
-                     Grid.Row="2"
+                     Grid.Row="0"
                      Grid.Column="0"
                      Grid.ColumnSpan="2">
             <CollectionView ItemsSource="{Binding ListOfRecivers}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="10*"/>
-                                <ColumnDefinition Width="50*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="50"/>
-                                <RowDefinition Height="50"/>
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
-                                <Label Text="{Binding FirstName}"
-                                       Grid.Row="0"
-                                       Grid.Column="0"
-                                       Grid.ColumnSpan="2"/>
+                        <SwipeView>
+                            <SwipeView.RightItems>
+                                <SwipeItem Text="Remove" BackgroundColor="Red"
+                                           Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.RemovePersonCmd}"
+                                           CommandParameter="{Binding Id}"/>
+                                <SwipeItem Text="Add Gift"
+                                           BackgroundColor="Blue"
+                                           Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.AddGiftCmd}"/>
+                            </SwipeView.RightItems>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50*"/>
+                                    <ColumnDefinition Width="50*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="50"/>
+                                    <RowDefinition Height="50"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                    <Label Text="{Binding FirstName}"
+                                           Grid.Row="0"
+                                           Grid.Column="0"/>
+                                    <Label Text="{Binding LastName}"
+                                           Grid.Row="0"
+                                           Grid.Column="1"/>
                             </Grid>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
+        <Button Grid.Row="0"
+                Grid.Column="1"
+                Text="Add Person"
+                BorderColor="#2b3c3c"
+                BorderWidth="1"
+                FontAttributes="Bold"
+                BackgroundColor="#4ba862"
+                CornerRadius="15"
+                TextColor="White"
+                HorizontalOptions="End"
+                WidthRequest="160"
+                HeightRequest="70"
+                Margin="0,0,20,22"
+                VerticalOptions="End"
+                Command="{Binding AddPersonBtn}"/>
      </Grid>
 </ContentPage>

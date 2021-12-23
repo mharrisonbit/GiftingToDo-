@@ -5,27 +5,30 @@ using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
+using Prism.AppModel;
 using Prism.Commands;
 using Prism.Navigation;
 
 namespace GiftingToDo.ViewModels
 {
-    public class MainPageViewModel : ViewModelBase
+    public class MainPageViewModel : ViewModelBase, IPageLifecycleAware
     {
         public IGiftingService giftService { get; }
-        public IErrorHandler errorHandler { get; }
 
         public DelegateCommand AddPersonBtn { get; private set; }
         public DelegateCommand RefreshListCmd { get; private set; }
+        public DelegateCommand AddGiftCmd { get; private set; }
+        public DelegateCommand GetAllGifts { get; private set; }
+        public DelegateCommand<object> RemovePersonCmd { get; private set; }
 
-        public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService)
+        public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
         {
             this.giftService = giftService;
-            this.errorHandler = errorHandler; 
             AddPersonBtn = new DelegateCommand(async ()=> await AddPerson());
             RefreshListCmd = new DelegateCommand(async ()=> await PopulateData());
-
-            PopulateData();
+            AddGiftCmd = new DelegateCommand(AddGiftToReciever);
+            GetAllGifts = new DelegateCommand(async ()=> await RemoveAllGiftsFromDb());
+            RemovePersonCmd = new DelegateCommand<object>(async (x)=> await DeleteReciever(x));
         }
 
 
@@ -52,26 +55,7 @@ namespace GiftingToDo.ViewModels
 
         private async Task AddPerson()
         {
-            try
-            {
-                var person = new Receiver();
-                person.FirstName = FirstNameEntry;
-                var temp = new Gift();
-                temp.ItemDescription = "this is a thing";
-                temp.PaperWrappedIn = "Purple";
-                temp.Price = 10.99;
-                person.Gifts = new List<Gift>
-                {
-                    temp
-                };
-
-                await this.giftService.AddReceiverAsync(person);
-                ListOfRecivers.Add(person);
-            }
-            catch (Exception ex)
-            {
-                this.errorHandler.PrintErrorMessage(ex);
-            }
+            await this.NavigationService.NavigateAsync("AddPersonView");
         }
 
         async Task GetAllRecievers()
@@ -79,6 +63,40 @@ namespace GiftingToDo.ViewModels
             var tempList = await this.giftService.GetAllReciversAsync();
             var temp = new ObservableCollection<Receiver>(tempList);
             ListOfRecivers = temp;
+        }
+
+
+        private void AddGiftToReciever()
+        {
+
+        }
+
+        private async Task DeleteReciever(object reciever)
+        {
+            var val = Convert.ToInt32(reciever);
+            await this.giftService.RemoveRecieverAsync(val);
+            await PopulateData();
+        }
+
+        private async Task GetAllGiftsTest()
+        {
+            var answer = await this.giftService.GetAllGiftsInDataBase();
+            Console.WriteLine(answer);
+        }
+
+        private async Task RemoveAllGiftsFromDb()
+        {
+            await this.giftService.RemoveAllGiftsFromDb();
+        }
+
+        public void OnAppearing()
+        {
+            PopulateData();
+        }
+
+        public void OnDisappearing()
+        {
+            
         }
     }
 }

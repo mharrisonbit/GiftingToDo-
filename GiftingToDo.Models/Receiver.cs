@@ -14,6 +14,7 @@ namespace GiftingToDo.Models
         public string LastName { get; set; }
         public double AmountSpent { get; set; }
         public double TotalAmountSpent { get; set; }
+        public bool IsComplete { get; set; }
 
         [OneToMany]
         public List<Gift> Gifts { get; set; }

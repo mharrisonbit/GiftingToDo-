@@ -74,13 +74,14 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 await Init();
 
-                await _db.DeleteAsync<Receiver>(id);
                 var usersGifts = await GetAllGiftsForRecieverAsync(id);
 
                 foreach (var item in usersGifts)
                 {
-                    await _db.DeleteAsync<Gift>(item);
+                    await _db.DeleteAsync<Gift>(item.Id);
                 }
+
+                await _db.DeleteAsync<Receiver>(id);
             }
             catch (Exception ex)
             {
@@ -122,6 +123,7 @@ namespace GiftingToDo.Interfaces.Implementations
                     
                 }
                 TotalAmountSpent(recievers);
+                IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -176,6 +178,25 @@ namespace GiftingToDo.Interfaces.Implementations
             }
         }
 
+        public async Task RemoveAllGiftsFromDb()
+        {
+            try
+            {
+                await Init();
+                await _db.ExecuteAsync("Delete From Gifts");
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+        }
+
+        public async Task<List<Gift>> GetAllGiftsInDataBase()
+        {
+            var gifts = await _db.Table<Gift>().ToListAsync();
+            return gifts;
+        }
+
         private async Task<List<Gift>> GetAllGiftsForRecieverAsync(int id)
         {
             await Init();
@@ -186,12 +207,12 @@ namespace GiftingToDo.Interfaces.Implementations
         /// <summary>
         /// This is going to loop through the list of recievers and then do the math to see if the gift has been purchased and figure the amount spent.
         /// </summary>
-        /// <param name="receivers"></param>
-        private void TotalAmountSpent(List<Receiver> receivers)
+        /// <param name="recievers"></param>
+        private void TotalAmountSpent(List<Receiver> recievers)
         {
             try
             {
-                foreach (var receiver in receivers)
+                foreach (var receiver in recievers)
                 {
                     var totalSpent = 0.0;
                     foreach (var gift in receiver.Gifts)
@@ -206,6 +227,27 @@ namespace GiftingToDo.Interfaces.Implementations
             catch (Exception ex)
             {
                 this.errorHandler.PrintErrorMessage(ex);
+            }
+        }
+
+        private void IsRecieverFinished(List<Receiver> recievers)
+        {
+            foreach (var reciever in recievers)
+            {
+                var giftCount = reciever.Gifts.Count;
+                var giftsPurchased = 0;
+                foreach (var gift in reciever.Gifts)
+                {
+                    if (gift.ItemPurchased)
+                    {
+                        giftsPurchased++;
+                    }
+                }
+
+                if (giftsPurchased == giftCount)
+                {
+                    reciever.IsComplete = true;
+                }
             }
         }
     }
