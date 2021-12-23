@@ -1,7 +1,11 @@
 ﻿using System;
+using GiftingToDo.Helpers;
+using GiftingToDo.Interfaces.Implementations;
+using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.ViewModels;
 using GiftingToDo.Views;
 using Prism.Ioc;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace GiftingToDo
@@ -15,6 +19,7 @@ namespace GiftingToDo
         protected override async void OnInitialized()
         {
             InitializeComponent();
+            CheckCurrentDb();
 
             var result = await NavigationService.NavigateAsync("NavigationPage/MainPage");
 
@@ -28,6 +33,24 @@ namespace GiftingToDo
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+
+            //this is the interfaces that will be used.
+            containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();
+            containerRegistry.RegisterSingleton<IGiftingService, GiftingService>();
         }
+
+        /// <summary>
+        /// this is going to run and double check to make sure that the DB is running the proper version and that the items are properly updated.
+        /// </summary>
+        private void CheckCurrentDb()
+        {
+            double dbVersion = Preferences.Get("currentDbVersion", Constants.DefaultDbVersion);
+            if (dbVersion <= Constants.CurrentVersion)
+            {
+                var dbUpdate = new DbChangeScripts();
+                dbUpdate.DbUpdate(dbVersion);
+            }
+        }
+
     }
 }
