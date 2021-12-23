@@ -23,29 +23,32 @@
                Grid.Row="1"
                Grid.Column="0"
                Grid.ColumnSpan="2"/>
-        <CollectionView Grid.Row="2"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        ItemsSource="{Binding ListOfRecivers}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="10*"/>
-                            <ColumnDefinition Width="50*"/>
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="50"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                            <Label Text="{Binding FirstName}"
-                                   Grid.Row="0"
-                                   Grid.Column="0"
-                                   Grid.ColumnSpan="2"/>
-                        </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <RefreshView IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding RefreshListCmd}"
+                     Grid.Row="2"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="2">
+            <CollectionView ItemsSource="{Binding ListOfRecivers}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10*"/>
+                                <ColumnDefinition Width="50*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="50"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                                <Label Text="{Binding FirstName}"
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="2"/>
+                            </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
      </Grid>
 </ContentPage>

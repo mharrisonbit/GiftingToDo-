@@ -6,7 +6,7 @@ namespace GiftingToDo.Interfaces.Interfaces
 {
     public interface IGiftingService
     {
-        Task AddGiftToUserAsync(Receiver receiver, Gift gift);
+        Task AddGiftToUserAsync(Receiver receiver, List<Gift> gifts);
         Task AddReceiverAsync(Receiver reciever);
         Task<List<Receiver>> GetAllReciversAsync();
         Task<Receiver> GetRecieverAsync(int id);

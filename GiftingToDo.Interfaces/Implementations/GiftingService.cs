@@ -52,6 +52,10 @@ namespace GiftingToDo.Interfaces.Implementations
                 await Init();
 
                 await _db.InsertAsync(reciever);
+                if (reciever.Gifts != null)
+                {
+                    await AddGiftToUserAsync(reciever, reciever.Gifts);
+                }
             }
             catch (Exception ex)
             {
@@ -108,6 +112,15 @@ namespace GiftingToDo.Interfaces.Implementations
                 await Init();
 
                 var recievers = await _db.Table<Receiver>().ToListAsync();
+                foreach (var reciever in recievers)
+                {
+                    List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
+                    if (giftsList != null)
+                    {
+                        reciever.Gifts = giftsList;
+                    }
+                    
+                }
                 TotalAmountSpent(recievers);
                 return recievers;
             }
@@ -125,14 +138,16 @@ namespace GiftingToDo.Interfaces.Implementations
         /// <param name="receiver"></param>
         /// <param name="gift"></param>
         /// <returns></returns>
-        public async Task AddGiftToUserAsync(Receiver receiver, Gift gift)
+        public async Task AddGiftToUserAsync(Receiver receiver, List<Gift> gifts)
         {
             try
             {
                 await Init();
-
-                gift.ReceiverId = receiver.Id;
-                await _db.InsertAsync(gift);
+                foreach (var gift in gifts)
+                {
+                    gift.ReceiverId = receiver.Id;
+                }
+                await _db.InsertAllAsync(gifts);
             }
             catch (Exception ex)
             {
