@@ -9,6 +9,7 @@
     <None Remove="Implementations\" />
     <None Remove="sqlite-net-pcl" />
     <None Remove="Xamarin.Essentials" />
+    <None Remove="SQLiteNetExtensions.Async" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Interfaces\" />
@@ -17,8 +18,10 @@
   <ItemGroup>
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GiftingToDo.Models\GiftingToDo.Models.csproj" />
+    <ProjectReference Include="..\GiftingToDo.Helpers\GiftingToDo.Helpers.csproj" />
   </ItemGroup>
 </Project>

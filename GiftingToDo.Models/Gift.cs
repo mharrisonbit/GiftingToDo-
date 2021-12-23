@@ -1,5 +1,5 @@
-﻿using System;
-using SQLite;
+﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace GiftingToDo.Models
 {
@@ -9,7 +9,10 @@ namespace GiftingToDo.Models
         [PrimaryKey, AutoIncrement]
         public int Id{ get; set; }
         public string ItemType { get; set; }
+        public string ItemDescription { get; set; }
+        public string PaperWrappedIn { get; set; }
         public double Price { get; set; }
+        public bool ItemPurchased { get; set; }
 
         [ForeignKey(typeof(Receiver))]
         public int ReceiverId { get; set; }
