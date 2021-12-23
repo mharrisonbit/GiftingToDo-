@@ -25,7 +25,7 @@ namespace GiftingToDo.Interfaces.Implementations
         {
             try
             {
-                if (_db is not null)
+                if (_db != null)
                 {
                     return;
                 }
@@ -71,6 +71,12 @@ namespace GiftingToDo.Interfaces.Implementations
                 await Init();
 
                 await _db.DeleteAsync<Receiver>(id);
+                var usersGifts = await GetAllGiftsForRecieverAsync(id);
+
+                foreach (var item in usersGifts)
+                {
+                    await _db.DeleteAsync<Gift>(item);
+                }
             }
             catch (Exception ex)
             {
@@ -83,9 +89,12 @@ namespace GiftingToDo.Interfaces.Implementations
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task GetRecieverAsync(int id)
+        public async Task<Receiver> GetRecieverAsync(int id)
         {
             await Init();
+
+            var reciever = await _db.GetAsync<Receiver>(id);
+            return reciever;
         }
 
         /// <summary>
@@ -118,14 +127,45 @@ namespace GiftingToDo.Interfaces.Implementations
         /// <returns></returns>
         public async Task AddGiftToUserAsync(Receiver receiver, Gift gift)
         {
-            await Init();
-            //TODO add the logic to add the gift to the user that was passed.
+            try
+            {
+                await Init();
+
+                gift.ReceiverId = receiver.Id;
+                await _db.InsertAsync(gift);
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
         }
 
+        /// <summary>
+        /// this is going to add a gift and link it to the reciever that is sent to it.
+        /// </summary>
+        /// <param name="receiver"></param>
+        /// <param name="gift"></param>
+        /// <returns></returns>
         public async Task RemoveGiftFromReciever(Receiver receiver, Gift gift)
         {
+            try
+            {
+                await Init();
+
+                gift.ReceiverId = receiver.Id;
+                await _db.DeleteAsync<Gift>(gift);
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+        }
+
+        private async Task<List<Gift>> GetAllGiftsForRecieverAsync(int id)
+        {
             await Init();
-            //TODO remove the gift from the user in question.
+            var gifts = await _db.Table<Gift>().Where(c => c.ReceiverId == id).ToListAsync();
+            return gifts;
         }
 
         /// <summary>

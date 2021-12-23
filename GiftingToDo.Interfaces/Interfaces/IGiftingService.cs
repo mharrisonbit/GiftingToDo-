@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using GiftingToDo.Models;
 
@@ -8,9 +7,10 @@ namespace GiftingToDo.Interfaces.Interfaces
     public interface IGiftingService
     {
         Task AddGiftToUserAsync(Receiver receiver, Gift gift);
-        Task AddReceiverAsync(Receiver receiver);
+        Task AddReceiverAsync(Receiver reciever);
         Task<List<Receiver>> GetAllReciversAsync();
-        Task GetRecieverAsync(int id);
+        Task<Receiver> GetRecieverAsync(int id);
+        Task RemoveGiftFromReciever(Receiver receiver, Gift gift);
         Task RemoveRecieverAsync(int id);
     }
 }
