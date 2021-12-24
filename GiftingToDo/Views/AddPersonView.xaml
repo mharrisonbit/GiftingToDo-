@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:prism="http://prismlibrary.com"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Class="GiftingToDo.Views.AddPersonView"
+    Title="Add New Person">
+    <Grid ColumnDefinitions="50*, 50*" RowDefinitions="5*, 10*, 10*, 10*, 10*, 55*">
+       <Label Text="Enter the users information"
+              Grid.Row="0"
+              Grid.Column="0"
+              Grid.ColumnSpan="2"
+              HorizontalOptions="CenterAndExpand"/>
+        <Entry Placeholder="First Name"
+               Grid.Row="1"
+               Grid.Column="0"
+               Text="{Binding PersonToAdd.FirstName}"/>
+        <Entry Placeholder="Last Name"
+               Grid.Row="1"
+               Grid.Column="1"
+               Text="{Binding PersonToAdd.LastName}"/>
+        <DatePicker Grid.Row="2"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Date="{Binding PersonToAdd.Birthdate}"
+                    MinimumDate="01-01-1920"/>
+        <Entry Grid.Row="3"
+               Grid.Column="0"
+               Placeholder="100"
+               Text="{Binding PersonToAdd.SpendingLimit}"/>
+        <Button Text="Add Person"
+                Grid.Row="4"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Command="{Binding AddPersonToDb}"/>
+     </Grid>
+</ContentPage>
