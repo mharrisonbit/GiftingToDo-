@@ -40,6 +40,7 @@ namespace GiftingToDo.Interfaces.Implementations
             }
         }
 
+        #region Reciever based methods
         /// <summary>
         /// this is going to add the new person and gifts to the DB
         /// </summary>
@@ -136,7 +137,9 @@ namespace GiftingToDo.Interfaces.Implementations
 
             return null;
         }
+        #endregion Reciever based methods.
 
+        #region Gift based methods
         /// <summary>
         /// this is going to add the gift to the user that was passed.
         /// </summary>
@@ -161,10 +164,10 @@ namespace GiftingToDo.Interfaces.Implementations
         }
 
         /// <summary>
-        /// this is going to add the gift to the user that was passed.
+        /// this is going to add the List of gifts to the user that was passed.
         /// </summary>
-        /// <param name="receiver"></param>
-        /// <param name="gift"></param>
+        /// <param name="id"></param>
+        /// <param name="gifts"></param>
         /// <returns></returns>
         public async Task<bool> AddGiftToUserAsync(int id, List<Gift> gifts)
         {
@@ -185,6 +188,25 @@ namespace GiftingToDo.Interfaces.Implementations
                 this.errorHandler.PrintErrorMessage(ex);
             }
             return giftAdded;
+        }
+
+        public async Task<bool> UpdateGiftInfo(Gift gift)
+        {
+            var updated = true;
+            try
+            {
+                await Init();
+                var giftToUpdate = await _db.GetAsync<Gift>(gift.Id);
+                await _db.UpdateAsync(gift);
+                var giftUpdated = await _db.GetAsync<Gift>(gift.Id);
+            }
+            catch (Exception ex)
+            {
+                updated = false;
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+
+            return updated;
         }
 
         /// <summary>
@@ -226,7 +248,9 @@ namespace GiftingToDo.Interfaces.Implementations
             var gifts = await _db.Table<Gift>().ToListAsync();
             return gifts;
         }
+        #endregion Gift based methods
 
+        #region these are the hepler methods
         private async Task<List<Gift>> GetAllGiftsForRecieverAsync(int id)
         {
             await Init();
@@ -280,5 +304,6 @@ namespace GiftingToDo.Interfaces.Implementations
                 }
             }
         }
+        #endregion end of the helper methods.
     }
 }

@@ -5,6 +5,7 @@
     xmlns:prism="http://prismlibrary.com"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Class="GiftingToDo.Views.AddPersonView"
+    Visual="Material"
     Title="Add New Person">
     <Grid ColumnDefinitions="50*, 50*" RowDefinitions="5*, 10*, 10*, 10*, 10*, 55*">
        <Label Text="Enter the users information"
@@ -28,6 +29,7 @@
         <Entry Grid.Row="3"
                Grid.Column="0"
                Placeholder="100"
+               Keyboard="Numeric"
                Text="{Binding PersonToAdd.SpendingLimit}"/>
         <Button Text="Add Person"
                 Grid.Row="4"

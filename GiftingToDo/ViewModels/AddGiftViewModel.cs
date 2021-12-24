@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
@@ -12,6 +11,7 @@ namespace GiftingToDo.ViewModels
     {
         public DelegateCommand AddGiftToRecieverBtn { get; private set; }
 
+        public Gift giftToAdd { get; private set; }
         public int recieverId { get; private set; }
         public IGiftingService giftingService { get; }
 
@@ -19,27 +19,36 @@ namespace GiftingToDo.ViewModels
         {
             this.giftingService = giftingService;
             AddGiftToRecieverBtn = new DelegateCommand(async ()=> await AddGiftToUser());
-            GiftToAdd = new Gift();
+            giftToAdd = new Gift();
         }
 
-        Gift _GiftToAdd;
-        public Gift GiftToAdd
+        string _ItemPrice;
+        public string ItemPrice
         {
-            get { return _GiftToAdd; }
-            set { SetProperty(ref _GiftToAdd, value); }
+            get { return _ItemPrice; }
+            set { SetProperty(ref _ItemPrice, value); }
         }
+
+        string _ItemDescription;
+        public string ItemDescription
+        {
+            get { return _ItemDescription; }
+            set { SetProperty(ref _ItemDescription, value); }
+        }
+
 
         private async Task AddGiftToUser()
         {
-            
-            var wasAdded = await this.giftingService.AddGiftToUserAsync(recieverId, GiftToAdd);
+            giftToAdd.ItemDescription = ItemDescription;
+            giftToAdd.Price = ConvertStringToDouble(ItemPrice);
+
+            var wasAdded = await this.giftingService.AddGiftToUserAsync(recieverId, giftToAdd);
             if (wasAdded)
             {
-                GiftToAdd.ItemType = null;
-                GiftToAdd.ItemPurchased = false;
-                GiftToAdd.ItemDescription = null;
-                GiftToAdd.Price = 0.0;
-                GiftToAdd.PaperWrappedIn = null;
+                ItemPrice = "";
+                ItemDescription = "";
+                giftToAdd.ItemDescription = "";
+                giftToAdd.Price = 0.0;
             }
         }
 

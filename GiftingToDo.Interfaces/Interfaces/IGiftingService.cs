@@ -14,5 +14,6 @@ namespace GiftingToDo.Interfaces.Interfaces
         Task RemoveAllGiftsFromDb();
         Task RemoveGiftFromReciever(Receiver receiver, Gift gift);
         Task RemoveRecieverAsync(int id);
+        Task<bool> UpdateGiftInfo(Gift gift);
     }
 }

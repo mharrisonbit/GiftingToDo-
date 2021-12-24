@@ -5,30 +5,25 @@
     x:Class="GiftingToDo.Views.AddGiftView"
     xmlns:prism="http://prismlibrary.com"
     prism:ViewModelLocator.AutowireViewModel="True"
+    Visual="Material"
     Title="Add Gift To User">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="50*"/>
-            <ColumnDefinition Width="50*"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="20"/>
-        </Grid.RowDefinitions>
-        <Label Text="Item Description"
+    <Grid ColumnDefinitions="50*, 50*" RowDefinitions="70, 20, 20, 20, *, 50">
+        <Entry Text="{Binding ItemDescription}"
                Grid.Row="0"
-               Grid.Column="0"/>
-        <Entry Text="{Binding GiftToAdd.ItemDescription}"
+               Grid.Column="0"
+               Placeholder="Item Decription"/>
+        <Entry Text="{Binding ItemPrice}"
                Grid.Row="0"
-               Grid.Column="1"/>
-        <Button Text="Add Gift"
+               Grid.Column="1"
+               Keyboard="Numeric"
+               Placeholder="Item price$100"/>
+        <Button Text="Done"
                 Grid.Row="5"
                 Grid.Column="0"
-                Grid.ColumnSpan="2"
+                Command="{prism:GoBack}" />
+        <Button Text="Add Gift"
+                Grid.Row="5"
+                Grid.Column="1"
                 Command="{Binding AddGiftToRecieverBtn}"/>
      </Grid>
 </ContentPage>

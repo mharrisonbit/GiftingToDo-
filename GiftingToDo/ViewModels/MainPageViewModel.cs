@@ -20,6 +20,7 @@ namespace GiftingToDo.ViewModels
         public DelegateCommand GetAllGifts { get; private set; }
         public DelegateCommand<object> AddGiftCmd { get; private set; }
         public DelegateCommand<object> RemovePersonCmd { get; private set; }
+        public DelegateCommand<Gift> ItemPurchasedCheck { get; private set; }
 
         public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
         {
@@ -29,6 +30,7 @@ namespace GiftingToDo.ViewModels
             GetAllGifts = new DelegateCommand(async ()=> await RemoveAllGiftsFromDb());
             AddGiftCmd = new DelegateCommand<object>(async (x)=> await AddGiftToReciever(x));
             RemovePersonCmd = new DelegateCommand<object>(async (x)=> await DeleteReciever(x));
+            ItemPurchasedCheck = new DelegateCommand<Gift>(async (x)=> await SetItemToPurchased(x));
         }
 
 
@@ -81,6 +83,12 @@ namespace GiftingToDo.ViewModels
             var val = Convert.ToInt32(reciever);
             await this.giftService.RemoveRecieverAsync(val);
             await PopulateData();
+        }
+
+        private async Task SetItemToPurchased(Gift gift)
+        {
+            var updated = await this.giftService.UpdateGiftInfo(gift);
+            Console.WriteLine(updated);
         }
 
         private async Task GetAllGiftsTest()

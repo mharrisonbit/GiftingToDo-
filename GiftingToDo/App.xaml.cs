@@ -46,7 +46,7 @@ namespace GiftingToDo
         private void CheckCurrentDb()
         {
             double dbVersion = Preferences.Get("currentDbVersion", Constants.DefaultDbVersion);
-            if (dbVersion <= Constants.CurrentVersion)
+            if (dbVersion <= Constants.CurrentDBVersion)
             {
                 var dbUpdate = new DbChangeScripts();
                 dbUpdate.DbUpdate(dbVersion);

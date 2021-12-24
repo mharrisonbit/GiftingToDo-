@@ -8,13 +8,9 @@
         /// <param name="versionNum"></param>
         public void DbUpdate(double versionNum)
         {
-            switch (versionNum)
+            if (versionNum <= Constants.CurrentDBVersion)
             {
-                case (1.0):
-                    //do stuff
-                    break;
-                default:
-                    break;
+
             }
         }
     }

@@ -18,6 +18,8 @@
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
     <PackageReference Include="Xamarin.Forms.DebugRainbows" Version="1.1.4" />
     <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.3.0.759" />
+    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="5.0.0.2291" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="1.3.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\" />
@@ -28,6 +30,8 @@
     <None Remove="SQLiteNetExtensions.Async" />
     <None Remove="Xamarin.Forms.DebugRainbows" />
     <None Remove="Xamarin.Forms.PancakeView" />
+    <None Remove="Xamarin.Forms.Visual.Material" />
+    <None Remove="Xamarin.CommunityToolkit" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GiftingToDo.Interfaces\GiftingToDo.Interfaces.csproj" />
