@@ -45,8 +45,9 @@ namespace GiftingToDo.Interfaces.Implementations
         /// </summary>
         /// <param name="reciever"></param>
         /// <returns></returns>
-        public async Task AddReceiverAsync(Receiver reciever)
+        public async Task<bool> AddReceiverAsync(Receiver reciever)
         {
+            var personAdded = true;
             try
             {
                 await Init();
@@ -54,13 +55,15 @@ namespace GiftingToDo.Interfaces.Implementations
                 await _db.InsertAsync(reciever);
                 if (reciever.Gifts != null)
                 {
-                    await AddGiftToUserAsync(reciever, reciever.Gifts);
+                    var added = await AddGiftToUserAsync(reciever.Id, reciever.Gifts);
                 }
             }
             catch (Exception ex)
             {
+                personAdded = false;
                 this.errorHandler.PrintErrorMessage(ex);
             }
+            return personAdded;
         }
 
         /// <summary>
@@ -140,21 +143,48 @@ namespace GiftingToDo.Interfaces.Implementations
         /// <param name="receiver"></param>
         /// <param name="gift"></param>
         /// <returns></returns>
-        public async Task AddGiftToUserAsync(Receiver receiver, List<Gift> gifts)
+        public async Task<bool> AddGiftToUserAsync(int id, Gift gift)
         {
+            var giftAdded = true;
+            try
+            {
+                await Init();
+                gift.ReceiverId = id;
+                await _db.InsertAsync(gift);
+            }
+            catch (Exception ex)
+            {
+                giftAdded = false;
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return giftAdded;
+        }
+
+        /// <summary>
+        /// this is going to add the gift to the user that was passed.
+        /// </summary>
+        /// <param name="receiver"></param>
+        /// <param name="gift"></param>
+        /// <returns></returns>
+        public async Task<bool> AddGiftToUserAsync(int id, List<Gift> gifts)
+        {
+            var giftAdded = true;
             try
             {
                 await Init();
                 foreach (var gift in gifts)
                 {
-                    gift.ReceiverId = receiver.Id;
+                    gift.ReceiverId = id;
                 }
                 await _db.InsertAllAsync(gifts);
+
             }
             catch (Exception ex)
             {
+                giftAdded = false;
                 this.errorHandler.PrintErrorMessage(ex);
             }
+            return giftAdded;
         }
 
         /// <summary>

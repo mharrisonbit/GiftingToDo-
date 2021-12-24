@@ -1,5 +1,4 @@
-﻿using System;
-using GiftingToDo.Helpers;
+﻿using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Implementations;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.ViewModels;
@@ -34,6 +33,7 @@ namespace GiftingToDo
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<AddPersonView, AddPersonViewModel>();
+            containerRegistry.RegisterForNavigation<AddGiftView, AddGiftViewModel>();
 
             //this is the interfaces that will be used.
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();

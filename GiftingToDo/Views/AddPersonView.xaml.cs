@@ -6,5 +6,9 @@
         {
             InitializeComponent();
         }
+
+        void DatePicker_DateSelected(System.Object sender, Xamarin.Forms.DateChangedEventArgs e)
+        {
+        }
     }
 }

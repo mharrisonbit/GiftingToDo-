@@ -17,8 +17,8 @@ namespace GiftingToDo.ViewModels
 
         public DelegateCommand AddPersonBtn { get; private set; }
         public DelegateCommand RefreshListCmd { get; private set; }
-        public DelegateCommand AddGiftCmd { get; private set; }
         public DelegateCommand GetAllGifts { get; private set; }
+        public DelegateCommand<object> AddGiftCmd { get; private set; }
         public DelegateCommand<object> RemovePersonCmd { get; private set; }
 
         public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
@@ -26,8 +26,8 @@ namespace GiftingToDo.ViewModels
             this.giftService = giftService;
             AddPersonBtn = new DelegateCommand(async ()=> await AddPerson());
             RefreshListCmd = new DelegateCommand(async ()=> await PopulateData());
-            AddGiftCmd = new DelegateCommand(AddGiftToReciever);
             GetAllGifts = new DelegateCommand(async ()=> await RemoveAllGiftsFromDb());
+            AddGiftCmd = new DelegateCommand<object>(async (x)=> await AddGiftToReciever(x));
             RemovePersonCmd = new DelegateCommand<object>(async (x)=> await DeleteReciever(x));
         }
 
@@ -66,9 +66,14 @@ namespace GiftingToDo.ViewModels
         }
 
 
-        private void AddGiftToReciever()
+        private async Task AddGiftToReciever(object id)
         {
-
+            var val = Convert.ToInt32(id);
+            var navParameters = new NavigationParameters
+            {
+                { "RecieverId", val }
+            };
+            await this.NavigationService.NavigateAsync("AddGiftView", navParameters);
         }
 
         private async Task DeleteReciever(object reciever)
