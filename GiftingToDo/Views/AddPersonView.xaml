@@ -7,7 +7,9 @@
     x:Class="GiftingToDo.Views.AddPersonView"
     Visual="Material"
     Title="Add New Person">
-    <Grid ColumnDefinitions="50*, 50*" RowDefinitions="5*, 10*, 10*, 10*, 10*, 55*">
+    <Grid ColumnDefinitions="50*, 50*"
+          RowDefinitions="5*, 10*, 10*, 10*, 10*, 55*"
+          Margin="20">
        <Label Text="Enter the users information"
               Grid.Row="0"
               Grid.Column="0"

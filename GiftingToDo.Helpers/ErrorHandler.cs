@@ -10,6 +10,7 @@ namespace GiftingToDo.Helpers
         public void PrintErrorMessage(Exception exception)
         {
             Console.WriteLine(exception.Message);
+            System.Diagnostics.Debugger.Break();
         }
     }
 }

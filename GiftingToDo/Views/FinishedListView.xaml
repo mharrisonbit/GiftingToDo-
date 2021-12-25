@@ -1,29 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GiftingToDo.Views.MainPage"
-             x:Name="RecieverListView"
-             Visual="Material"
-             xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-             Title="People And Gifts"
-             xmlns:rainbows="clr-namespace:Xamarin.Forms.DebugRainbows;assembly=Xamarin.Forms.DebugRainbows"
-             xmlns:prism="http://prismlibrary.com"
-             xmlns:views="http://xamarin.com/schemas/2020/toolkit"
-             rainbows:DebugRainbow.ShowColors="False"
-             BackgroundColor="Gray">
-    <!--<ContentPage.ToolbarItems>
-        <ToolbarItem Text="Finished"
-                     Order="Primary"
-                     Priority="0"
-                     Command="{Binding ShowFinishedBtn}"/>
-    </ContentPage.ToolbarItems>-->
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="GiftingToDo.Views.FinishedListView"
+    xmlns:prism="http://prismlibrary.com"
+    x:Name="FinishedList"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView">
     <Grid ColumnDefinitions="10*, 50*"
           Margin="0,10,0,0">
         <RefreshView IsRefreshing="{Binding IsBusy}"
                      Command="{Binding RefreshListCmd}"
                      Grid.Column="0"
                      Grid.ColumnSpan="2">
-            <CollectionView ItemsSource="{Binding ListOfRecivers}"
+            <CollectionView ItemsSource="{Binding FinishedList}"
                             Margin="10"
                             BackgroundColor="Transparent">
                 <CollectionView.ItemsLayout>
@@ -33,25 +23,20 @@
                     <DataTemplate>
                         <yummy:PancakeView>
                             <yummy:PancakeView.Border>
-                                <yummy:Border Color="Black"
+                                <yummy:Border Color="#000000"
                                                 Thickness="2"/>
                             </yummy:PancakeView.Border>
                             <Grid ColumnDefinitions="50*, 50*"
                                   RowDefinitions="40, 20, Auto"
                                   Padding="10,0,0,0"
-                                  BackgroundColor="{StaticResource PersonCardColor}">
+                                  BackgroundColor="DarkGoldenrod">
                                 <SwipeView Grid.Row="0"
                                            Grid.Column="0"
                                            Grid.ColumnSpan="2"
-                                           BackgroundColor="{StaticResource PersonCardColor}">
+                                           BackgroundColor="DarkGoldenrod">
                                     <SwipeView.RightItems>
-                                        <SwipeItem Text="Remove"
-                                                   BackgroundColor="{StaticResource RemovePerson}"
-                                                   Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.RemovePersonCmd}"
-                                                   CommandParameter="{Binding Id}"/>
-                                        <SwipeItem Text="Add Gift"
-                                                   BackgroundColor="{StaticResource AddGift}"
-                                                   Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.AddGiftCmd}"
+                                        <SwipeItem Text="Remove" BackgroundColor="Red"
+                                                   Command="{Binding Source={x:Reference FinishedList}, Path=BindingContext.RemovePersonCmd}"
                                                    CommandParameter="{Binding Id}"/>
                                     </SwipeView.RightItems>
                                     <Grid ColumnDefinitions="50*, 50*">
@@ -92,7 +77,7 @@
                                                           Color="Blue">
                                                     <CheckBox.Behaviors>
                                                         <prism:EventToCommandBehavior EventName="CheckedChanged"
-                                                                                      Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.ItemPurchasedCheck}"
+                                                                                      Command="{Binding Source={x:Reference FinishedList}, Path=BindingContext.ItemPurchasedCheck}"
                                                                                       CommandParameter="{Binding .}"/>
                                                     </CheckBox.Behaviors>
                                                     </CheckBox>
@@ -106,19 +91,5 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-        <Button Grid.Column="1"
-                Text="Add Person"
-                BorderColor="#2b3c3c"
-                BorderWidth="1"
-                FontAttributes="Bold"
-                BackgroundColor="#4ba862"
-                CornerRadius="15"
-                TextColor="White"
-                HorizontalOptions="End"
-                WidthRequest="160"
-                HeightRequest="70"
-                Margin="0,0,20,22"
-                VerticalOptions="End"
-                Command="{Binding AddPersonBtn}"/>
-     </Grid>
+    </Grid>
 </ContentPage>

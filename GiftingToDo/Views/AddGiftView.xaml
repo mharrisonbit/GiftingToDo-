@@ -7,7 +7,8 @@
     prism:ViewModelLocator.AutowireViewModel="True"
     Visual="Material"
     Title="Add Gift To User">
-    <Grid ColumnDefinitions="50*, 50*" RowDefinitions="70, 20, 20, 20, *, 50">
+    <Grid ColumnDefinitions="50*, 50*" RowDefinitions="70, 20, 20, 20, *, 50"
+          Margin="20">
         <Entry Text="{Binding ItemDescription}"
                Grid.Row="0"
                Grid.Column="0"
@@ -16,7 +17,7 @@
                Grid.Row="0"
                Grid.Column="1"
                Keyboard="Numeric"
-               Placeholder="Item price$100"/>
+               Placeholder="Item price $100"/>
         <Button Text="Done"
                 Grid.Row="5"
                 Grid.Column="0"
