@@ -6,9 +6,10 @@
     xmlns:prism="http://prismlibrary.com"
     prism:ViewModelLocator.AutowireViewModel="True"
     x:Name="FinishedList"
-    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView">
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+    Title="Completed List">
      <Grid ColumnDefinitions="10*, 50*"
-          Margin="0,10,0,0">
+           Margin="0,10,0,0">
         <RefreshView IsRefreshing="{Binding IsBusy}"
                      Command="{Binding RefreshListCmd}"
                      Grid.Column="0"
@@ -29,15 +30,16 @@
                             <Grid ColumnDefinitions="50*, 50*"
                                   RowDefinitions="40, 20, Auto"
                                   Padding="10,0,0,0"
-                                  BackgroundColor="DarkGoldenrod">
+                                  BackgroundColor="{StaticResource PersonCardColor}">
                                 <SwipeView Grid.Row="0"
                                            Grid.Column="0"
                                            Grid.ColumnSpan="2"
-                                           BackgroundColor="DarkGoldenrod">
+                                           BackgroundColor="{StaticResource PersonCardColor}">
                                     <SwipeView.RightItems>
-                                        <SwipeItem Text="Remove" BackgroundColor="Red"
+                                        <SwipeItem Text="Remove"
+                                                   BackgroundColor="{StaticResource RemovePerson}"
                                                    Command="{Binding Source={x:Reference FinishedList}, Path=BindingContext.RemovePersonCmd}"
-                                                   CommandParameter="{Binding Id}"/>
+                                                   CommandParameter="{Binding .}"/>
                                     </SwipeView.RightItems>
                                     <Grid ColumnDefinitions="50*, 50*">
                                         <Label Text="{Binding FirstName}"

@@ -17,14 +17,14 @@ namespace GiftingToDo.ViewModels
 
         public DelegateCommand RefreshListCmd { get; private set; }
         public DelegateCommand<Gift> ItemPurchasedCheck { get; private set; }
-        //public DelegateCommand<int> RemovePersonCmd { get; private set; }
+        public DelegateCommand<Receiver> RemovePersonCmd { get; private set; }
 
         public CompletedListViewModel(INavigationService navigationService, IErrorHandler errorHandler, IGiftingService giftingService) : base(navigationService, errorHandler)
         {
             this.giftingService = giftingService;
             RefreshListCmd = new DelegateCommand(async () => await PopulateData());
             ItemPurchasedCheck = new DelegateCommand<Gift>(async (x) => await SetItemToPurchased(x));
-            //RemovePersonCmd = new DelegateCommand<int>(async (x) => await DeleteReciever(x));
+            RemovePersonCmd = new DelegateCommand<Receiver>(async (x) => await DeleteReciever(x));
         }
 
         ObservableCollection<Receiver> _FinishedList;
@@ -52,10 +52,9 @@ namespace GiftingToDo.ViewModels
 
         }
 
-        private async Task DeleteReciever(int reciever)
+        private async Task DeleteReciever(Receiver reciever)
         {
-            var val = Convert.ToInt32(reciever);
-            await this.giftingService.RemoveRecieverAsync(val);
+            await this.giftingService.RemoveRecieverAsync(reciever.Id);
             await PopulateData();
         }
 

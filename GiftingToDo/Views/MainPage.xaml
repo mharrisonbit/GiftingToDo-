@@ -54,11 +54,20 @@
                                                    Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.AddGiftCmd}"
                                                    CommandParameter="{Binding Id}"/>
                                     </SwipeView.RightItems>
-                                    <Grid ColumnDefinitions="50*, 50*">
+                                    <Grid ColumnDefinitions="15*, 30*, 5*, 30*, 20*"
+                                          RowDefinitions="40, 40">
                                         <Label Text="{Binding FirstName}"
+                                               Grid.Row="0"
                                                Grid.Column="0"/>
                                         <Label Text="{Binding LastName}"
+                                               Grid.Row="0"
                                                Grid.Column="1"/>
+                                        <Label Text="Amount Spent"
+                                               Grid.Row="0"
+                                               Grid.Column="3"/>
+                                        <Label Text="{Binding AmountSpent, StringFormat='${0}'}"
+                                               Grid.Row="0"
+                                               Grid.Column="4"/>
                                     </Grid>
                                 </SwipeView>
                                 <Label Text="Gifts"

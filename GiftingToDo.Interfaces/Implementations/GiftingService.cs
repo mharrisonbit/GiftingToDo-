@@ -42,7 +42,7 @@ namespace GiftingToDo.Interfaces.Implementations
 
         #region Reciever based methods
         /// <summary>
-        /// this is going to add the new person and gifts to the DB
+        /// this is going to add the new person to the DB
         /// </summary>
         /// <param name="reciever"></param>
         /// <returns></returns>
@@ -54,10 +54,6 @@ namespace GiftingToDo.Interfaces.Implementations
                 await Init();
 
                 await _db.InsertAsync(reciever);
-                if (reciever.Gifts != null)
-                {
-                    var added = await AddGiftToUserAsync(reciever.Id, reciever.Gifts);
-                }
             }
             catch (Exception ex)
             {
@@ -133,8 +129,8 @@ namespace GiftingToDo.Interfaces.Implementations
                     }
                     
                 }
-                TotalAmountSpent(recievers);
-                await IsRecieverFinished(recievers);
+                //await TotalAmountSpent(recievers);
+                //await IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -165,7 +161,7 @@ namespace GiftingToDo.Interfaces.Implementations
                     }
 
                 }
-                TotalAmountSpent(recievers);
+                //await TotalAmountSpent(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -198,8 +194,8 @@ namespace GiftingToDo.Interfaces.Implementations
 
                 }
 
-                TotalAmountSpent(recievers);
-                await IsRecieverFinished(recievers);
+                //await TotalAmountSpent(recievers);
+                //await IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -268,9 +264,9 @@ namespace GiftingToDo.Interfaces.Implementations
             try
             {
                 await Init();
-                var giftToUpdate = await _db.GetAsync<Gift>(gift.Id);
                 await _db.UpdateAsync(gift);
-                var giftUpdated = await _db.GetAsync<Gift>(gift.Id);
+
+                await TotalAmountSpent(gift.ReceiverId);
                 await IsRecieverFinished(gift.ReceiverId);
             }
             catch (Exception ex)
@@ -296,6 +292,7 @@ namespace GiftingToDo.Interfaces.Implementations
 
                 gift.ReceiverId = receiver.Id;
                 await _db.DeleteAsync<Gift>(gift);
+                await TotalAmountSpent(gift.ReceiverId);
             }
             catch (Exception ex)
             {
@@ -303,6 +300,10 @@ namespace GiftingToDo.Interfaces.Implementations
             }
         }
 
+        /// <summary>
+        /// This is going to remove all the gifts from the db.
+        /// </summary>
+        /// <returns></returns>
         public async Task RemoveAllGiftsFromDb()
         {
             try
@@ -316,6 +317,10 @@ namespace GiftingToDo.Interfaces.Implementations
             }
         }
 
+        /// <summary>
+        /// this is going to return all the gifts from the db in a list.
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<Gift>> GetAllGiftsInDataBase()
         {
             var gifts = await _db.Table<Gift>().ToListAsync();
@@ -332,83 +337,30 @@ namespace GiftingToDo.Interfaces.Implementations
         }
 
         /// <summary>
-        /// This is going to loop through the list of recievers and then do the math to see if the gift has been purchased and figure the amount spent.
+        /// This is going to do the math on what has been spent so far.
         /// </summary>
-        /// <param name="recievers"></param>
-        private void TotalAmountSpent(List<Receiver> recievers)
+        /// <param name="reciever"></param>
+        private async Task TotalAmountSpent(int recieverId)
         {
             try
             {
-                foreach (var receiver in recievers)
-                {
-                    var totalSpent = 0.0;
-                    foreach (var gift in receiver.Gifts)
-                    {
-                        if (gift.ItemPurchased)
-                        {
-                            totalSpent += gift.Price;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                this.errorHandler.PrintErrorMessage(ex);
-            }
-        }
+                var reciever = await _db.GetAsync<Receiver>(recieverId);
+                reciever.Gifts = await GetAllGiftsForRecieverAsync(reciever.Id);
 
-        private async Task IsRecieverFinished(List<Receiver> recievers)
-        {
-            foreach (var reciever in recievers)
-            {
-                var giftCount = reciever.Gifts.Count;
-                if (giftCount >= 1)
-                {
-                    var giftsPurchased = 0;
-                    foreach (var gift in reciever.Gifts)
-                    {
-                        if (gift.ItemPurchased)
-                        {
-                            giftsPurchased++;
-                        }
-                    }
-
-                    if (giftsPurchased == giftCount)
-                    {
-                        reciever.IsComplete = true;
-                    }
-
-                    if (reciever.IsComplete)
-                    {
-                        await _db.UpdateAsync(reciever);
-                    }
-                }
-            }
-        }
-
-        private async Task IsRecieverFinished(Receiver reciever)
-        {
-            var giftCount = reciever.Gifts.Count;
-            if (giftCount >= 1)
-            {
-                var giftsPurchased = 0;
+                var totalSpent = 0.0;
                 foreach (var gift in reciever.Gifts)
                 {
                     if (gift.ItemPurchased)
                     {
-                        giftsPurchased++;
+                        totalSpent += gift.Price;
                     }
                 }
-
-                if (giftsPurchased == giftCount)
-                {
-                    reciever.IsComplete = true;
-                }
-
-                if (reciever.IsComplete)
-                {
-                    await _db.UpdateAsync(reciever);
-                }
+                reciever.AmountSpent = totalSpent;
+                await _db.UpdateAsync(reciever);
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
             }
         }
 
@@ -432,10 +384,7 @@ namespace GiftingToDo.Interfaces.Implementations
                     reciever.IsComplete = giftsPurchased == giftCount;
                 }
 
-                if (reciever.IsComplete)
-                {
-                    await _db.UpdateAsync(reciever);
-                }
+                await _db.UpdateAsync(reciever);
             }
             catch (Exception ex)
             {
