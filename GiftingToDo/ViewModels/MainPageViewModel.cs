@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GiftingToDo.Helpers;
@@ -18,8 +17,10 @@ namespace GiftingToDo.ViewModels
         public DelegateCommand AddPersonBtn { get; private set; }
         public DelegateCommand RefreshListCmd { get; private set; }
         public DelegateCommand GetAllGifts { get; private set; }
+        public DelegateCommand ShowFinishedBtn { get; private set; }
         public DelegateCommand<object> AddGiftCmd { get; private set; }
         public DelegateCommand<object> RemovePersonCmd { get; private set; }
+        public DelegateCommand<Gift> ItemPurchasedCheck { get; private set; }
 
         public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
         {
@@ -27,10 +28,11 @@ namespace GiftingToDo.ViewModels
             AddPersonBtn = new DelegateCommand(async ()=> await AddPerson());
             RefreshListCmd = new DelegateCommand(async ()=> await PopulateData());
             GetAllGifts = new DelegateCommand(async ()=> await RemoveAllGiftsFromDb());
+            ShowFinishedBtn = new DelegateCommand(async ()=> await NavigateToFinished());
             AddGiftCmd = new DelegateCommand<object>(async (x)=> await AddGiftToReciever(x));
             RemovePersonCmd = new DelegateCommand<object>(async (x)=> await DeleteReciever(x));
+            ItemPurchasedCheck = new DelegateCommand<Gift>(async (x)=> await SetItemToPurchased(x));
         }
-
 
         string _FirstNameEntry;
         public string FirstNameEntry
@@ -60,7 +62,7 @@ namespace GiftingToDo.ViewModels
 
         async Task GetAllRecievers()
         {
-            var tempList = await this.giftService.GetAllReciversAsync();
+            var tempList = await this.giftService.GetUncompeletedReciversAsync();
             var temp = new ObservableCollection<Receiver>(tempList);
             ListOfRecivers = temp;
         }
@@ -83,6 +85,21 @@ namespace GiftingToDo.ViewModels
             await PopulateData();
         }
 
+        private async Task SetItemToPurchased(Gift gift)
+        {
+            if (gift != null)
+            {
+                var updated = await this.giftService.UpdateGiftInfo(gift);
+                await GetAllRecievers();
+            }
+            
+        }
+
+        private async Task NavigateToFinished()
+        {
+            var answer = await this.NavigationService.NavigateAsync("FinishedListView");
+        }
+
         private async Task GetAllGiftsTest()
         {
             var answer = await this.giftService.GetAllGiftsInDataBase();
@@ -101,7 +118,6 @@ namespace GiftingToDo.ViewModels
 
         public void OnDisappearing()
         {
-            
         }
     }
 }

@@ -34,6 +34,7 @@ namespace GiftingToDo
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<AddPersonView, AddPersonViewModel>();
             containerRegistry.RegisterForNavigation<AddGiftView, AddGiftViewModel>();
+            containerRegistry.RegisterForNavigation<FinishedListView, FinishedListViewModel>();
 
             //this is the interfaces that will be used.
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();
@@ -46,7 +47,7 @@ namespace GiftingToDo
         private void CheckCurrentDb()
         {
             double dbVersion = Preferences.Get("currentDbVersion", Constants.DefaultDbVersion);
-            if (dbVersion <= Constants.CurrentVersion)
+            if (dbVersion <= Constants.CurrentDBVersion)
             {
                 var dbUpdate = new DbChangeScripts();
                 dbUpdate.DbUpdate(dbVersion);

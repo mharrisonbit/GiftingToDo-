@@ -6,5 +6,14 @@
                         xmlns:prism="http://prismlibrary.com"
                         mc:Ignorable="d"
                         x:Class="GiftingToDo.App">
-
+    <prism:PrismApplication.Resources>
+    </prism:PrismApplication.Resources>
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="PersonCardColor">#B8860B</Color>
+            <Color x:Key="ListBody">#FFFFFF</Color>
+            <Color x:Key="RemovePerson">#FF0000</Color>
+            <Color x:Key="AddGift">#0000FF</Color>
+        </ResourceDictionary>
+    </Application.Resources>
 </prism:PrismApplication>

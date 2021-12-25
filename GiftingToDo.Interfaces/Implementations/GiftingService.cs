@@ -40,6 +40,7 @@ namespace GiftingToDo.Interfaces.Implementations
             }
         }
 
+        #region Reciever based methods
         /// <summary>
         /// this is going to add the new person and gifts to the DB
         /// </summary>
@@ -102,6 +103,13 @@ namespace GiftingToDo.Interfaces.Implementations
             await Init();
 
             var reciever = await _db.GetAsync<Receiver>(id);
+
+            List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
+            if (giftsList != null)
+            {
+                reciever.Gifts = giftsList;
+            }
+
             return reciever;
         }
 
@@ -126,7 +134,7 @@ namespace GiftingToDo.Interfaces.Implementations
                     
                 }
                 TotalAmountSpent(recievers);
-                IsRecieverFinished(recievers);
+                await IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -137,6 +145,74 @@ namespace GiftingToDo.Interfaces.Implementations
             return null;
         }
 
+        /// <summary>
+        /// This gets and returns all the people that have all the gifts saved in the DB.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Receiver>> GetCompeletedReciversAsync()
+        {
+            try
+            {
+                await Init();
+
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == true).ToListAsync();
+                foreach (var reciever in recievers)
+                {
+                    List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
+                    if (giftsList != null)
+                    {
+                        reciever.Gifts = giftsList;
+                    }
+
+                }
+                TotalAmountSpent(recievers);
+                await IsRecieverFinished(recievers);
+                return recievers;
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// This gets and returns all the people that have all the gifts saved in the DB.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<Receiver>> GetUncompeletedReciversAsync()
+        {
+            try
+            {
+                await Init();
+
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == false).ToListAsync();
+
+                foreach (var reciever in recievers)
+                {
+                    List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
+                    if (giftsList != null)
+                    {
+                        reciever.Gifts = giftsList;
+                    }
+
+                }
+
+                TotalAmountSpent(recievers);
+                await IsRecieverFinished(recievers);
+                return recievers;
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+
+            return null;
+        }
+        #endregion Reciever based methods.
+
+        #region Gift based methods
         /// <summary>
         /// this is going to add the gift to the user that was passed.
         /// </summary>
@@ -161,10 +237,10 @@ namespace GiftingToDo.Interfaces.Implementations
         }
 
         /// <summary>
-        /// this is going to add the gift to the user that was passed.
+        /// this is going to add the List of gifts to the user that was passed.
         /// </summary>
-        /// <param name="receiver"></param>
-        /// <param name="gift"></param>
+        /// <param name="id"></param>
+        /// <param name="gifts"></param>
         /// <returns></returns>
         public async Task<bool> AddGiftToUserAsync(int id, List<Gift> gifts)
         {
@@ -185,6 +261,26 @@ namespace GiftingToDo.Interfaces.Implementations
                 this.errorHandler.PrintErrorMessage(ex);
             }
             return giftAdded;
+        }
+
+        public async Task<bool> UpdateGiftInfo(Gift gift)
+        {
+            var updated = true;
+            try
+            {
+                await Init();
+                var giftToUpdate = await _db.GetAsync<Gift>(gift.Id);
+                await _db.UpdateAsync(gift);
+                var giftUpdated = await _db.GetAsync<Gift>(gift.Id);
+                await IsRecieverFinished(gift.ReceiverId);
+            }
+            catch (Exception ex)
+            {
+                updated = false;
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+
+            return updated;
         }
 
         /// <summary>
@@ -226,7 +322,9 @@ namespace GiftingToDo.Interfaces.Implementations
             var gifts = await _db.Table<Gift>().ToListAsync();
             return gifts;
         }
+        #endregion Gift based methods
 
+        #region these are the hepler methods
         private async Task<List<Gift>> GetAllGiftsForRecieverAsync(int id)
         {
             await Init();
@@ -260,11 +358,40 @@ namespace GiftingToDo.Interfaces.Implementations
             }
         }
 
-        private void IsRecieverFinished(List<Receiver> recievers)
+        private async Task IsRecieverFinished(List<Receiver> recievers)
         {
             foreach (var reciever in recievers)
             {
                 var giftCount = reciever.Gifts.Count;
+                if (giftCount >= 1)
+                {
+                    var giftsPurchased = 0;
+                    foreach (var gift in reciever.Gifts)
+                    {
+                        if (gift.ItemPurchased)
+                        {
+                            giftsPurchased++;
+                        }
+                    }
+
+                    if (giftsPurchased == giftCount)
+                    {
+                        reciever.IsComplete = true;
+                    }
+
+                    if (reciever.IsComplete)
+                    {
+                        await _db.UpdateAsync(reciever);
+                    }
+                }
+            }
+        }
+
+        private async Task IsRecieverFinished(Receiver reciever)
+        {
+            var giftCount = reciever.Gifts.Count;
+            if (giftCount >= 1)
+            {
                 var giftsPurchased = 0;
                 foreach (var gift in reciever.Gifts)
                 {
@@ -278,7 +405,47 @@ namespace GiftingToDo.Interfaces.Implementations
                 {
                     reciever.IsComplete = true;
                 }
+
+                if (reciever.IsComplete)
+                {
+                    await _db.UpdateAsync(reciever);
+                }
             }
         }
+
+        private async Task IsRecieverFinished(int recieverId)
+        {
+            try
+            {
+                var reciever = await GetRecieverAsync(recieverId);
+                var giftCount = reciever.Gifts.Count;
+                if (giftCount >= 1)
+                {
+                    var giftsPurchased = 0;
+                    foreach (var gift in reciever.Gifts)
+                    {
+                        if (gift.ItemPurchased)
+                        {
+                            giftsPurchased++;
+                        }
+                    }
+
+                    if (giftsPurchased == giftCount)
+                    {
+                        reciever.IsComplete = true;
+                    }
+                }
+
+                if (reciever.IsComplete)
+                {
+                    await _db.UpdateAsync(reciever);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+        }
+        #endregion end of the helper methods.
     }
 }
