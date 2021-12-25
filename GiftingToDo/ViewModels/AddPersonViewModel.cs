@@ -20,6 +20,9 @@ namespace GiftingToDo.ViewModels
             AddPersonToDb = new DelegateCommand(async ()=> await AddPerson());
 
             PersonToAdd = new Receiver();
+            DatePickerMaxDate = DateTime.Now;
+            DatePickerMinDate = DateTime.Now.AddYears(-100);
+            AmountToSpend = new double();
         }
 
         Receiver _PersonToAdd;
@@ -29,10 +32,32 @@ namespace GiftingToDo.ViewModels
             set { SetProperty(ref _PersonToAdd, value); }
         }
 
+        DateTime _DatePickerMaxDate;
+        public DateTime DatePickerMaxDate
+        {
+            get { return _DatePickerMaxDate; }
+            set { SetProperty(ref _DatePickerMaxDate, value); }
+        }
+
+        DateTime _DatePickerMinDate;
+        public DateTime DatePickerMinDate
+        {
+            get { return _DatePickerMinDate; }
+            set { SetProperty(ref _DatePickerMinDate, value); }
+        }
+
+        double _AmountToSpend;
+        public double AmountToSpend
+        {
+            get { return _AmountToSpend; }
+            set { SetProperty(ref _AmountToSpend, value); }
+        }
+
         private async Task AddPerson()
         {
             try
             {
+                PersonToAdd.SpendingLimit = AmountToSpend;
                 var personAdded = await this.giftService.AddReceiverAsync(PersonToAdd);
                 if (personAdded)
                 {

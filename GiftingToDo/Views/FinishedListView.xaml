@@ -4,10 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="GiftingToDo.Views.FinishedListView"
     xmlns:prism="http://prismlibrary.com"
-    x:Name="FinishedList"
-    prism:ViewModelLocator.AutowireViewModel="True"
-    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView">
-    <Grid ColumnDefinitions="10*, 50*"
+    prism:ViewModelLocator.AutowireViewModel="True">
+    <!--<Grid ColumnDefinitions="10*, 50*"
           Margin="0,10,0,0">
         <RefreshView IsRefreshing="{Binding IsBusy}"
                      Command="{Binding RefreshListCmd}"
@@ -91,5 +89,5 @@
                 </CollectionView.ItemTemplate>
             </CollectionView>
         </RefreshView>
-    </Grid>
+    </Grid>-->
 </ContentPage>

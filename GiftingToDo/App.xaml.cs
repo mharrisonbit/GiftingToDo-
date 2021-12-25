@@ -34,7 +34,7 @@ namespace GiftingToDo
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<AddPersonView, AddPersonViewModel>();
             containerRegistry.RegisterForNavigation<AddGiftView, AddGiftViewModel>();
-            containerRegistry.RegisterForNavigation<FinishedListView, FinishedListViewModel>();
+            containerRegistry.RegisterForNavigation<CompletedListView, CompletedListViewModel>();
 
             //this is the interfaces that will be used.
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();
