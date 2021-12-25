@@ -97,7 +97,7 @@ namespace GiftingToDo.ViewModels
 
         private async Task NavigateToFinished()
         {
-            var answer = await this.NavigationService.NavigateAsync("FinishedListView");
+            var answer = await this.NavigationService.NavigateAsync("CompletedListView");
         }
 
         private async Task GetAllGiftsTest()

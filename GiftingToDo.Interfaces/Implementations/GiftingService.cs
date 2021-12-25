@@ -166,7 +166,6 @@ namespace GiftingToDo.Interfaces.Implementations
 
                 }
                 TotalAmountSpent(recievers);
-                await IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -430,10 +429,7 @@ namespace GiftingToDo.Interfaces.Implementations
                         }
                     }
 
-                    if (giftsPurchased == giftCount)
-                    {
-                        reciever.IsComplete = true;
-                    }
+                    reciever.IsComplete = giftsPurchased == giftCount;
                 }
 
                 if (reciever.IsComplete)
