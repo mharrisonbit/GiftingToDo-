@@ -20,7 +20,7 @@ namespace GiftingToDo
             InitializeComponent();
             CheckCurrentDb();
 
-            var result = await NavigationService.NavigateAsync("NavigationPage/MainPage");
+            var result = await NavigationService.NavigateAsync("NavigationPage/TabbedView?selectedTab=MainPage");
 
             if (!result.Success)
             {
@@ -31,6 +31,7 @@ namespace GiftingToDo
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
+            containerRegistry.RegisterForNavigation<TabbedView, TabbedViewModel>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<AddPersonView, AddPersonViewModel>();
             containerRegistry.RegisterForNavigation<AddGiftView, AddGiftViewModel>();

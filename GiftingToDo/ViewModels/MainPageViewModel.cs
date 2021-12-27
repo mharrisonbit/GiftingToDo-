@@ -17,7 +17,6 @@ namespace GiftingToDo.ViewModels
         public DelegateCommand AddPersonBtn { get; private set; }
         public DelegateCommand RefreshListCmd { get; private set; }
         public DelegateCommand GetAllGifts { get; private set; }
-        public DelegateCommand ShowFinishedBtn { get; private set; }
         public DelegateCommand<object> AddGiftCmd { get; private set; }
         public DelegateCommand<object> RemovePersonCmd { get; private set; }
         public DelegateCommand<Gift> ItemPurchasedCheck { get; private set; }
@@ -28,7 +27,6 @@ namespace GiftingToDo.ViewModels
             AddPersonBtn = new DelegateCommand(async ()=> await AddPerson());
             RefreshListCmd = new DelegateCommand(async ()=> await PopulateData());
             GetAllGifts = new DelegateCommand(async ()=> await RemoveAllGiftsFromDb());
-            ShowFinishedBtn = new DelegateCommand(async ()=> await NavigateToFinished());
             AddGiftCmd = new DelegateCommand<object>(async (x)=> await AddGiftToReciever(x));
             RemovePersonCmd = new DelegateCommand<object>(async (x)=> await DeleteReciever(x));
             ItemPurchasedCheck = new DelegateCommand<Gift>(async (x)=> await SetItemToPurchased(x));
@@ -94,12 +92,6 @@ namespace GiftingToDo.ViewModels
             }
             
         }
-
-        private async Task NavigateToFinished()
-        {
-            var answer = await this.NavigationService.NavigateAsync("CompletedListView");
-        }
-
         private async Task GetAllGiftsTest()
         {
             var answer = await this.giftService.GetAllGiftsInDataBase();
