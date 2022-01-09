@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
+using Newtonsoft.Json;
 using SQLite;
 using Xamarin.Essentials;
 
@@ -327,6 +328,33 @@ namespace GiftingToDo.Interfaces.Implementations
             return gifts;
         }
         #endregion Gift based methods
+
+        #region The methods that will create a json file to export and read the json to import a reciever.
+
+        /// <summary>
+        /// this is going to take the sql query and then use that to import the new user and gifts into the db.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task ImportNewReciever(string query)
+        {
+            await Task.Delay(500);
+        }
+
+
+        /// <summary>
+        /// this is going to create the script for export
+        /// </summary>
+        /// <param name="reciever"></param>
+        /// <returns></returns>
+        public async Task<string> CreateJsonForExport(Receiver reciever)
+        {
+            await Task.Delay(500);
+            var answer = JsonConvert.SerializeObject(reciever);
+            return answer;
+        }
+
+        #endregion
 
         #region these are the hepler methods
         private async Task<List<Gift>> GetAllGiftsForRecieverAsync(int id)

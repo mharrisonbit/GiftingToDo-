@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
@@ -7,12 +8,15 @@ using GiftingToDo.Models;
 using Prism.AppModel;
 using Prism.Commands;
 using Prism.Navigation;
+using Xamarin.Essentials;
+using Xamarin.Essentials.Interfaces;
 
 namespace GiftingToDo.ViewModels
 {
     public class MainPageViewModel : ViewModelBase, IPageLifecycleAware
     {
         public IGiftingService giftService { get; }
+        public IShare share { get; }
 
         public DelegateCommand AddPersonBtn { get; private set; }
         public DelegateCommand RefreshListCmd { get; private set; }
@@ -20,16 +24,20 @@ namespace GiftingToDo.ViewModels
         public DelegateCommand<object> AddGiftCmd { get; private set; }
         public DelegateCommand<object> RemovePersonCmd { get; private set; }
         public DelegateCommand<Gift> ItemPurchasedCheck { get; private set; }
+        public DelegateCommand<Receiver> ShareItemCmd { get; private set; }
 
-        public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
+        public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler, IShare share) : base(navigationService, errorHandler)
         {
             this.giftService = giftService;
+            this.share = share;
+
             AddPersonBtn = new DelegateCommand(async ()=> await AddPerson());
             RefreshListCmd = new DelegateCommand(async ()=> await PopulateData());
             GetAllGifts = new DelegateCommand(async ()=> await RemoveAllGiftsFromDb());
             AddGiftCmd = new DelegateCommand<object>(async (x)=> await AddGiftToReciever(x));
             RemovePersonCmd = new DelegateCommand<object>(async (x)=> await DeleteReciever(x));
             ItemPurchasedCheck = new DelegateCommand<Gift>(async (x)=> await SetItemToPurchased(x));
+            ShareItemCmd = new DelegateCommand<Receiver>(async (x)=> await ShareRecieverAsync(x));
         }
 
         string _FirstNameEntry;
@@ -92,6 +100,23 @@ namespace GiftingToDo.ViewModels
             }
             
         }
+
+        private async Task ShareRecieverAsync(Receiver reciever)
+        {
+            var itemToShare = await this.giftService.GetRecieverAsync(reciever.Id);
+            var textForExport = await this.giftService.CreateJsonForExport(itemToShare);
+
+            var fn = $"{reciever.FirstName}_{reciever.LastName}.txt";
+            var file = Path.Combine(FileSystem.CacheDirectory, fn);
+            File.WriteAllText(file, textForExport);
+
+            await Share.RequestAsync(new ShareFileRequest
+            {
+                Title = $"Share {reciever.FirstName} with others",
+                File = new ShareFile(file)
+            });
+        }
+
         private async Task GetAllGiftsTest()
         {
             var answer = await this.giftService.GetAllGiftsInDataBase();
