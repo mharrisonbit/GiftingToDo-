@@ -336,9 +336,31 @@ namespace GiftingToDo.Interfaces.Implementations
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        public async Task ImportNewReciever(string query)
+        public async Task<bool> ImportNewReciever(string infoString)
         {
-            await Task.Delay(500);
+            var didImport = true;
+            try
+            {
+                var person = JsonConvert.DeserializeObject<Receiver>(infoString);
+
+                await Init();
+
+                await _db.InsertAsync(person);
+                var listOfRecievers = await _db.Table<Receiver>().ToListAsync();
+                var idOfReciever = listOfRecievers[listOfRecievers.Count - 1].Id;
+
+                foreach (var gift in person.Gifts)
+                {
+                    gift.ReceiverId = idOfReciever;
+                    await _db.InsertAsync(gift);
+                }
+            }
+            catch (Exception ex)
+            {
+                didImport = false;
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return didImport;
         }
 
 

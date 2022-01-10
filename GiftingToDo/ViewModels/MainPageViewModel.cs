@@ -106,7 +106,7 @@ namespace GiftingToDo.ViewModels
             var itemToShare = await this.giftService.GetRecieverAsync(reciever.Id);
             var textForExport = await this.giftService.CreateJsonForExport(itemToShare);
 
-            var fn = $"{reciever.FirstName}_{reciever.LastName}.txt";
+            var fn = $"Add_{reciever.FirstName}_{reciever.LastName}_And_My_Gifts.txt";
             var file = Path.Combine(FileSystem.CacheDirectory, fn);
             File.WriteAllText(file, textForExport);
 

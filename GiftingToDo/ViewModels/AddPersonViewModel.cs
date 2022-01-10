@@ -1,16 +1,19 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
 using Prism.Commands;
 using Prism.Navigation;
+using Xamarin.Essentials;
 
 namespace GiftingToDo.ViewModels
 {
     public class AddPersonViewModel : ViewModelBase
     {
         public DelegateCommand AddPersonToDb { get; private set; }
+        public DelegateCommand ImportPersonToDbCmd { get; private set; }
 
         public IGiftingService giftService { get; private set; }
 
@@ -18,6 +21,7 @@ namespace GiftingToDo.ViewModels
         {
             this.giftService = giftService;
             AddPersonToDb = new DelegateCommand(async ()=> await AddPerson());
+            ImportPersonToDbCmd = new DelegateCommand(async ()=> await ImportNewReciever());
 
             PersonToAdd = new Receiver();
             DatePickerMaxDate = DateTime.Now;
@@ -68,6 +72,18 @@ namespace GiftingToDo.ViewModels
             {
                 this.errorHandler.PrintErrorMessage(ex);
             }
+        }
+
+        private async Task ImportNewReciever()
+        {
+            var result = await FilePicker.PickAsync();
+            var infoToAdd = File.ReadAllText(result.FullPath);
+            var answer = await this.giftService.ImportNewReciever(infoToAdd);
+            if (answer)
+            {
+                await this.NavigationService.GoBackAsync();
+            }
+
         }
     }
 }

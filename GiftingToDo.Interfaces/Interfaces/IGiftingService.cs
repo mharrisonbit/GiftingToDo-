@@ -14,7 +14,7 @@ namespace GiftingToDo.Interfaces.Interfaces
         Task<List<Receiver>> GetCompeletedReciversAsync();
         Task<Receiver> GetRecieverAsync(int id);
         Task<List<Receiver>> GetUncompeletedReciversAsync();
-        Task ImportNewReciever(string query);
+        Task<bool> ImportNewReciever(string infoString);
         Task RemoveAllGiftsFromDb();
         Task RemoveGiftFromReciever(Receiver receiver, Gift gift);
         Task RemoveRecieverAsync(int id);
