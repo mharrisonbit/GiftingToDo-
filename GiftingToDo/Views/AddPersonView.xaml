@@ -8,7 +8,7 @@
     Visual="Material"
     Title="Add New Person">
     <Grid ColumnDefinitions="50*, 50*"
-          RowDefinitions="5*, 10*, 3*, 10*, 10*, 10*, 52*"
+          RowDefinitions="5*, 10*, 3*, 10*, 10*, 10*, 10*, 42*"
           Margin="20">
        <Label Text="Enter the users information"
               Grid.Row="0"
@@ -43,5 +43,10 @@
                 Grid.Column="0"
                 Grid.ColumnSpan="2"
                 Command="{Binding AddPersonToDb}"/>
+        <Button Text="Import New Person"
+                Grid.Row="6"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                Command="{Binding ImportPersonToDbCmd}"/>
      </Grid>
 </ContentPage>

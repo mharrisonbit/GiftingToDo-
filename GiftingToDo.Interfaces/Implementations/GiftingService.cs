@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
+using Newtonsoft.Json;
 using SQLite;
 using Xamarin.Essentials;
 
@@ -193,9 +194,6 @@ namespace GiftingToDo.Interfaces.Implementations
                     }
 
                 }
-
-                //await TotalAmountSpent(recievers);
-                //await IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -204,6 +202,36 @@ namespace GiftingToDo.Interfaces.Implementations
             }
 
             return null;
+        }
+
+        public async Task<int> GetRecieverCount()
+        {
+            var totalNumberOfRecievers = 0;
+            try
+            {
+                await Init();
+                totalNumberOfRecievers = await _db.ExecuteScalarAsync<int>("select count(*) from Receiver");
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return totalNumberOfRecievers;
+        }
+
+        public async Task<int> GetRecieverCount(bool condition)
+        {
+            var totalNumberOfRecievers = 0;
+            try
+            {
+                await Init();
+                totalNumberOfRecievers = await _db.ExecuteScalarAsync<int>($"select count(case WHEN IsComplete={condition} THEN 1 END) from Receiver");
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return totalNumberOfRecievers;
         }
         #endregion Reciever based methods.
 
@@ -327,6 +355,55 @@ namespace GiftingToDo.Interfaces.Implementations
             return gifts;
         }
         #endregion Gift based methods
+
+        #region The methods that will create a json file to export and read the json to import a reciever.
+
+        /// <summary>
+        /// this is going to take the sql query and then use that to import the new user and gifts into the db.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        public async Task<bool> ImportNewReciever(string infoString)
+        {
+            var didImport = true;
+            try
+            {
+                var person = JsonConvert.DeserializeObject<Receiver>(infoString);
+
+                await Init();
+
+                await _db.InsertAsync(person);
+                var listOfRecievers = await _db.Table<Receiver>().ToListAsync();
+                var idOfReciever = listOfRecievers[listOfRecievers.Count - 1].Id;
+
+                foreach (var gift in person.Gifts)
+                {
+                    gift.ReceiverId = idOfReciever;
+                    await _db.InsertAsync(gift);
+                }
+            }
+            catch (Exception ex)
+            {
+                didImport = false;
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return didImport;
+        }
+
+
+        /// <summary>
+        /// this is going to create the script for export
+        /// </summary>
+        /// <param name="reciever"></param>
+        /// <returns></returns>
+        public async Task<string> CreateJsonForExport(Receiver reciever)
+        {
+            await Task.Delay(500);
+            var answer = JsonConvert.SerializeObject(reciever);
+            return answer;
+        }
+
+        #endregion
 
         #region these are the hepler methods
         private async Task<List<Gift>> GetAllGiftsForRecieverAsync(int id)

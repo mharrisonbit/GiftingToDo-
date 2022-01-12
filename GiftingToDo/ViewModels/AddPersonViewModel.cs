@@ -1,23 +1,30 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
 using Prism.Commands;
 using Prism.Navigation;
+using Xamarin.Essentials;
 
 namespace GiftingToDo.ViewModels
 {
     public class AddPersonViewModel : ViewModelBase
     {
-        public DelegateCommand AddPersonToDb { get; private set; }
-
         public IGiftingService giftService { get; private set; }
+        public ICypher cypher { get; }
 
-        public AddPersonViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
+        public DelegateCommand AddPersonToDb { get; private set; }
+        public DelegateCommand ImportPersonToDbCmd { get; private set; }
+
+        public AddPersonViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler, ICypher cypher) : base(navigationService, errorHandler)
         {
             this.giftService = giftService;
+            this.cypher = cypher;
+
             AddPersonToDb = new DelegateCommand(async ()=> await AddPerson());
+            ImportPersonToDbCmd = new DelegateCommand(async ()=> await ImportNewReciever());
 
             PersonToAdd = new Receiver();
             DatePickerMaxDate = DateTime.Now;
@@ -68,6 +75,22 @@ namespace GiftingToDo.ViewModels
             {
                 this.errorHandler.PrintErrorMessage(ex);
             }
+        }
+
+        private async Task ImportNewReciever()
+        {
+            var result = await FilePicker.PickAsync();
+            if (result != null)
+            {
+                var tempInfoToAdd = File.ReadAllText(result.FullPath);
+                var infoToAdd = this.cypher.Base64Decode(tempInfoToAdd);
+                var answer = await this.giftService.ImportNewReciever(infoToAdd);
+                if (answer)
+                {
+                    await this.NavigationService.GoBackAsync();
+                }
+            }
+
         }
     }
 }

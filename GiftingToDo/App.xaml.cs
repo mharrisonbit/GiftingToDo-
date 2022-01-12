@@ -5,6 +5,8 @@ using GiftingToDo.ViewModels;
 using GiftingToDo.Views;
 using Prism.Ioc;
 using Xamarin.Essentials;
+using Xamarin.Essentials.Implementation;
+using Xamarin.Essentials.Interfaces;
 using Xamarin.Forms;
 
 namespace GiftingToDo
@@ -40,6 +42,8 @@ namespace GiftingToDo
             //this is the interfaces that will be used.
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();
             containerRegistry.RegisterSingleton<IGiftingService, GiftingService>();
+            containerRegistry.RegisterSingleton<IShare, ShareImplementation>();
+            containerRegistry.RegisterSingleton<ICypher, Cypher>();
         }
 
         /// <summary>
