@@ -13,6 +13,7 @@ namespace GiftingToDo.Models
         public string PaperWrappedIn { get; set; }
         public double Price { get; set; }
         public bool ItemPurchased { get; set; }
+        public bool ForBirthday { get; set; }
 
         [ForeignKey(typeof(Receiver))]
         public int ReceiverId { get; set; }

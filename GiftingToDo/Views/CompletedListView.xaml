@@ -16,7 +16,8 @@
                      Grid.ColumnSpan="2">
             <CollectionView ItemsSource="{Binding FinishedList}"
                             Margin="10"
-                            BackgroundColor="Transparent">
+                            BackgroundColor="Transparent"
+                            EmptyView="Looks like you have some gifts to buy.">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="20"/>
                 </CollectionView.ItemsLayout>

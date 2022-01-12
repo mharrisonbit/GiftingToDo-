@@ -1,4 +1,5 @@
-﻿using GiftingToDo.Helpers;
+﻿using System.Threading.Tasks;
+using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Implementations;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.ViewModels;
@@ -20,7 +21,7 @@ namespace GiftingToDo
         protected override async void OnInitialized()
         {
             InitializeComponent();
-            CheckCurrentDb();
+            await CheckCurrentDb();
 
             var result = await NavigationService.NavigateAsync("NavigationPage/TabbedView?selectedTab=MainPage");
 
@@ -49,15 +50,14 @@ namespace GiftingToDo
         /// <summary>
         /// this is going to run and double check to make sure that the DB is running the proper version and that the items are properly updated.
         /// </summary>
-        private void CheckCurrentDb()
+        private async Task CheckCurrentDb()
         {
             double dbVersion = Preferences.Get("currentDbVersion", Constants.DefaultDbVersion);
-            if (dbVersion <= Constants.CurrentDBVersion)
+            if (dbVersion < Constants.CurrentDBVersion)
             {
                 var dbUpdate = new DbChangeScripts();
-                dbUpdate.DbUpdate(dbVersion);
+                await dbUpdate.DbUpdate(dbVersion);
             }
         }
-
     }
 }

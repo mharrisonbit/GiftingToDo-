@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Interfaces;
 using GiftingToDo.Models;
@@ -20,6 +21,7 @@ namespace GiftingToDo.ViewModels
             this.giftingService = giftingService;
             AddGiftToRecieverBtn = new DelegateCommand(async ()=> await AddGiftToUser());
             giftToAdd = new Gift();
+            GiftsToBeAdded = new ObservableCollection<Gift>();
         }
 
         string _ItemPrice;
@@ -36,19 +38,33 @@ namespace GiftingToDo.ViewModels
             set { SetProperty(ref _ItemDescription, value); }
         }
 
+        ObservableCollection<Gift> _GiftsToBeAdded;
+        public ObservableCollection<Gift> GiftsToBeAdded
+        {
+            get { return _GiftsToBeAdded; }
+            set { SetProperty(ref _GiftsToBeAdded, value); }
+        }
 
         private async Task AddGiftToUser()
         {
-            giftToAdd.ItemDescription = ItemDescription;
-            giftToAdd.Price = ConvertStringToDouble(ItemPrice);
-
-            var wasAdded = await this.giftingService.AddGiftToUserAsync(recieverId, giftToAdd);
-            if (wasAdded)
+            try
             {
-                ItemPrice = "";
-                ItemDescription = "";
-                giftToAdd.ItemDescription = "";
-                giftToAdd.Price = 0.0;
+                giftToAdd.ItemDescription = ItemDescription;
+                giftToAdd.Price = ConvertStringToDouble(ItemPrice);
+
+                var wasAdded = await this.giftingService.AddGiftToUserAsync(recieverId, giftToAdd);
+                if (wasAdded)
+                {
+                    GiftsToBeAdded.Add(giftToAdd);
+                    ItemPrice = "";
+                    ItemDescription = "";
+                    giftToAdd.ItemDescription = "";
+                    giftToAdd.Price = 0.0;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
             }
         }
 
