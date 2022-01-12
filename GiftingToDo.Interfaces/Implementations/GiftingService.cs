@@ -55,6 +55,7 @@ namespace GiftingToDo.Interfaces.Implementations
                 await Init();
 
                 await _db.InsertAsync(reciever);
+                //TODO schedule a notification for the persons birthday.
             }
             catch (Exception ex)
             {
@@ -128,7 +129,7 @@ namespace GiftingToDo.Interfaces.Implementations
                     {
                         reciever.Gifts = giftsList;
                     }
-                    
+
                 }
                 //await TotalAmountSpent(recievers);
                 //await IsRecieverFinished(recievers);
@@ -467,6 +468,11 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 this.errorHandler.PrintErrorMessage(ex);
             }
+        }
+
+        private async Task ScheduleNotificationForNewUser()
+        {
+            await Task.Delay(500);
         }
         #endregion end of the helper methods.
     }

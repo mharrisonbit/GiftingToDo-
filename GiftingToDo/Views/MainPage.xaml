@@ -25,7 +25,8 @@
             <CollectionView ItemsSource="{Binding ListOfRecivers}"
                             Margin="10"
                             BackgroundColor="Transparent"
-                            VerticalScrollBarVisibility="Never">
+                            VerticalScrollBarVisibility="Never"
+                            EmptyView="No are no people or gifts to display">
                 <CollectionView.ItemsLayout>
                     <LinearItemsLayout Orientation="Vertical" ItemSpacing="20"/>
                 </CollectionView.ItemsLayout>
@@ -40,36 +41,24 @@
                                   RowDefinitions="30, 30, 20, Auto, 50, *"
                                   Padding="10,10,10,0"
                                   BackgroundColor="{StaticResource PersonCardColor}">
-                                <SwipeView Grid.Row="0"
-                                           Grid.Column="0"
-                                           Grid.ColumnSpan="2"
-                                           BackgroundColor="{StaticResource PersonCardColor}">
-                                    <SwipeView.RightItems>
-                                        <SwipeItem Text="Remove"
-                                                   BackgroundColor="{StaticResource RemovePerson}"
-                                                   Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.RemovePersonCmd}"
-                                                   CommandParameter="{Binding Id}"/>
-                                        <SwipeItem Text="Add Gift"
-                                                   BackgroundColor="{StaticResource AddGift}"
-                                                   Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.AddGiftCmd}"
-                                                   CommandParameter="{Binding Id}"/>
-                                    </SwipeView.RightItems>
-                                    <Grid ColumnDefinitions="Auto, Auto, 5*, Auto, Auto"
-                                          RowDefinitions="40, 40">
-                                        <Label Text="{Binding FirstName}"
-                                               Grid.Row="0"
-                                               Grid.Column="0"/>
-                                        <Label Text="{Binding LastName}"
-                                               Grid.Row="0"
-                                               Grid.Column="1"/>
-                                        <Label Text="Amount Spent"
-                                               Grid.Row="0"
-                                               Grid.Column="3"/>
-                                        <Label Text="{Binding AmountSpent, StringFormat='${0}'}"
-                                               Grid.Row="0"
-                                               Grid.Column="4"/>
-                                    </Grid>
-                                </SwipeView>
+                                <Grid Grid.Row="0"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        ColumnDefinitions="Auto, Auto, 5*, Auto, Auto"
+                                        RowDefinitions="40, 40">
+                                    <Label Text="{Binding FirstName}"
+                                            Grid.Row="0"
+                                            Grid.Column="0"/>
+                                    <Label Text="{Binding LastName}"
+                                            Grid.Row="0"
+                                            Grid.Column="1"/>
+                                    <Label Text="Amount Spent"
+                                            Grid.Row="0"
+                                            Grid.Column="3"/>
+                                    <Label Text="{Binding AmountSpent, StringFormat='${0}'}"
+                                            Grid.Row="0"
+                                            Grid.Column="4"/>
+                                </Grid>
                                 <Label Text="Limit"
                                        Grid.Row="1"
                                        Grid.Column="1"
@@ -117,14 +106,32 @@
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
                                 </StackLayout>
-                                <Button Grid.Row="4"
-                                        Grid.Column="1"
-                                        Text="Share"
-                                        BorderColor="Black"
-                                        BackgroundColor="Black"
-                                        TextColor="White"
-                                        Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.ShareItemCmd}"
-                                        CommandParameter="{Binding .}"/>
+                                <Grid Grid.Row="4"
+                                      Grid.Column="0"
+                                      Grid.ColumnSpan="2" ColumnDefinitions="33*, 33*, 33*">
+                                    <Button Grid.Column="0"
+                                            Text="Add Gift"
+                                            BorderColor="Black"
+                                            BackgroundColor="Black"
+                                            TextColor="White"
+                                            Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.AddGiftCmd}"
+                                            CommandParameter="{Binding Id}"/>
+                                    <Button Grid.Column="1"
+                                            Text="Share"
+                                            BorderColor="Black"
+                                            BackgroundColor="Black"
+                                            TextColor="White"
+                                            Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.ShareItemCmd}"
+                                            CommandParameter="{Binding .}"/>
+                                    <Button Grid.Column="2"
+                                            Text="Remove Person"
+                                            FontSize="Micro"
+                                            BorderColor="Black"
+                                            BackgroundColor="Red"
+                                            TextColor="White"
+                                            Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.RemovePersonCmd}"
+                                            CommandParameter="{Binding Id}"/>
+                                 </Grid>
                             </Grid>
                         </yummy:PancakeView>
                     </DataTemplate>
