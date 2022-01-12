@@ -43,6 +43,7 @@ namespace GiftingToDo
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();
             containerRegistry.RegisterSingleton<IGiftingService, GiftingService>();
             containerRegistry.RegisterSingleton<IShare, ShareImplementation>();
+            containerRegistry.RegisterSingleton<ICypher, Cypher>();
         }
 
         /// <summary>

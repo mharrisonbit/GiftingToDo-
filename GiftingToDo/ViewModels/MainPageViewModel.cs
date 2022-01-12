@@ -17,6 +17,7 @@ namespace GiftingToDo.ViewModels
     {
         public IGiftingService giftService { get; }
         public IShare share { get; }
+        public ICypher cypher { get; }
 
         public DelegateCommand AddPersonBtn { get; private set; }
         public DelegateCommand RefreshListCmd { get; private set; }
@@ -26,10 +27,11 @@ namespace GiftingToDo.ViewModels
         public DelegateCommand<Gift> ItemPurchasedCheck { get; private set; }
         public DelegateCommand<Receiver> ShareItemCmd { get; private set; }
 
-        public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler, IShare share) : base(navigationService, errorHandler)
+        public MainPageViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler, IShare share, ICypher cypher) : base(navigationService, errorHandler)
         {
             this.giftService = giftService;
             this.share = share;
+            this.cypher = cypher;
 
             AddPersonBtn = new DelegateCommand(async ()=> await AddPerson());
             RefreshListCmd = new DelegateCommand(async ()=> await PopulateData());
@@ -104,7 +106,8 @@ namespace GiftingToDo.ViewModels
         private async Task ShareRecieverAsync(Receiver reciever)
         {
             var itemToShare = await this.giftService.GetRecieverAsync(reciever.Id);
-            var textForExport = await this.giftService.CreateJsonForExport(itemToShare);
+            var tempTextForExport = await this.giftService.CreateJsonForExport(itemToShare);
+            var textForExport = this.cypher.Base64Encode(tempTextForExport);
 
             var fn = $"Add_{reciever.FirstName}_{reciever.LastName}_And_My_Gifts.txt";
             var file = Path.Combine(FileSystem.CacheDirectory, fn);

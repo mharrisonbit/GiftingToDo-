@@ -194,9 +194,6 @@ namespace GiftingToDo.Interfaces.Implementations
                     }
 
                 }
-
-                //await TotalAmountSpent(recievers);
-                //await IsRecieverFinished(recievers);
                 return recievers;
             }
             catch (Exception ex)
@@ -205,6 +202,36 @@ namespace GiftingToDo.Interfaces.Implementations
             }
 
             return null;
+        }
+
+        public async Task<int> GetRecieverCount()
+        {
+            var totalNumberOfRecievers = 0;
+            try
+            {
+                await Init();
+                totalNumberOfRecievers = await _db.ExecuteScalarAsync<int>("select count(*) from Receiver");
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return totalNumberOfRecievers;
+        }
+
+        public async Task<int> GetRecieverCount(bool condition)
+        {
+            var totalNumberOfRecievers = 0;
+            try
+            {
+                await Init();
+                totalNumberOfRecievers = await _db.ExecuteScalarAsync<int>($"select count(case WHEN IsComplete={condition} THEN 1 END) from Receiver");
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return totalNumberOfRecievers;
         }
         #endregion Reciever based methods.
 

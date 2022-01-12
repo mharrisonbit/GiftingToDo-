@@ -12,14 +12,17 @@ namespace GiftingToDo.ViewModels
 {
     public class AddPersonViewModel : ViewModelBase
     {
+        public IGiftingService giftService { get; private set; }
+        public ICypher cypher { get; }
+
         public DelegateCommand AddPersonToDb { get; private set; }
         public DelegateCommand ImportPersonToDbCmd { get; private set; }
 
-        public IGiftingService giftService { get; private set; }
-
-        public AddPersonViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler) : base(navigationService, errorHandler)
+        public AddPersonViewModel(INavigationService navigationService, IGiftingService giftService, IErrorHandler errorHandler, ICypher cypher) : base(navigationService, errorHandler)
         {
             this.giftService = giftService;
+            this.cypher = cypher;
+
             AddPersonToDb = new DelegateCommand(async ()=> await AddPerson());
             ImportPersonToDbCmd = new DelegateCommand(async ()=> await ImportNewReciever());
 
@@ -77,11 +80,15 @@ namespace GiftingToDo.ViewModels
         private async Task ImportNewReciever()
         {
             var result = await FilePicker.PickAsync();
-            var infoToAdd = File.ReadAllText(result.FullPath);
-            var answer = await this.giftService.ImportNewReciever(infoToAdd);
-            if (answer)
+            if (result != null)
             {
-                await this.NavigationService.GoBackAsync();
+                var tempInfoToAdd = File.ReadAllText(result.FullPath);
+                var infoToAdd = this.cypher.Base64Decode(tempInfoToAdd);
+                var answer = await this.giftService.ImportNewReciever(infoToAdd);
+                if (answer)
+                {
+                    await this.NavigationService.GoBackAsync();
+                }
             }
 
         }
