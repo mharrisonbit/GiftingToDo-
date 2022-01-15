@@ -70,6 +70,27 @@ namespace GiftingToDo.Interfaces.Implementations
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        public async Task SetRecieverAsDeleted(int id)
+        {
+            try
+            {
+                await Init();
+                var reciever = await GetRecieverAsync(id);
+                reciever.IsDeleted = true;
+                await _db.UpdateAsync(reciever);
+                
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+        }
+
+        /// <summary>
+        /// this is going to delete the user that is associated to the ID that is passed to it.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task RemoveRecieverAsync(int id)
         {
             try
@@ -153,7 +174,7 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 await Init();
 
-                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == true).ToListAsync();
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == true && x.IsDeleted == false).ToListAsync();
                 foreach (var reciever in recievers)
                 {
                     List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
@@ -184,7 +205,7 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 await Init();
 
-                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == false).ToListAsync();
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == false && x.IsDeleted == false).ToListAsync();
 
                 foreach (var reciever in recievers)
                 {
@@ -233,6 +254,32 @@ namespace GiftingToDo.Interfaces.Implementations
                 this.errorHandler.PrintErrorMessage(ex);
             }
             return totalNumberOfRecievers;
+        }
+
+        public async Task<List<Receiver>> GetAllDeletedReciversAsync()
+        {
+            try
+            {
+                await Init();
+
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsDeleted == true).ToListAsync();
+                foreach (var reciever in recievers)
+                {
+                    List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
+                    if (giftsList != null)
+                    {
+                        reciever.Gifts = giftsList;
+                    }
+
+                }
+                return recievers;
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+
+            return null;
         }
         #endregion Reciever based methods.
 

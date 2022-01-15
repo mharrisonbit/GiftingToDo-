@@ -13,5 +13,6 @@
     <TabbedPage.Children>
         <local:MainPage/>
         <local:CompletedListView/>
+        <local:SettingsView/>
     </TabbedPage.Children>
 </TabbedPage>

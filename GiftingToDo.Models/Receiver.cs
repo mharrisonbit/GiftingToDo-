@@ -17,6 +17,7 @@ namespace GiftingToDo.Models
         public double TotalAmountSpent { get; set; }
         public double SpendingLimit { get; set; }
         public bool IsComplete { get; set; }
+        public bool IsDeleted { get; set; }
         public DateTime Birthdate { get; set; }
 
         [OneToMany]
