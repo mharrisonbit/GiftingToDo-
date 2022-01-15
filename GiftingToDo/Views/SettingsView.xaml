@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GiftingToDo.Views.SettingsView"
+             Visual="Material"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             Title="Settings">
+    <Grid ColumnDefinitions="50*, 50*" RowDefinitions="60, 60, *, 60, 60">
+        <Label Text="Settings"
+               Grid.Row="0"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               HorizontalOptions="CenterAndExpand"/>
+        <Label Text="People that were removed"
+               Grid.Row="1"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"/>
+        <StackLayout Grid.Row="2"
+                     Grid.Column="0"
+                     Grid.ColumnSpan="2"
+                     BindableLayout.ItemsSource="{Binding ListOfRemovedRecievers}">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Label Text="{Binding FirstName}"/>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+        <Button Text="Remove All People"
+                Grid.Row="3"
+                Grid.Column="0"
+                Grid.ColumnSpan="2"
+                HorizontalOptions="CenterAndExpand"
+                Command="{Binding RemoveAllPeopleBtn}"/>
+        <Label Text="{Binding VersionNumberTxt}"
+               Grid.Row="4"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               HorizontalOptions="CenterAndExpand"/>
+    </Grid>
+</ContentPage>

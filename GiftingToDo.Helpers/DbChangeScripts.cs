@@ -38,9 +38,10 @@ namespace GiftingToDo.Helpers
         {
             try
             {
-                if (versionNum == .1)
+                if (versionNum < .1)
                 {
                     await Init();
+                    await _db.ExecuteAsync("update Receiver set IsDeleted = false");
                     Preferences.Set("currentDbVersion", 0.1);
                 }
             }

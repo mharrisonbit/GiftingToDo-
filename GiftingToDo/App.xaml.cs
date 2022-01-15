@@ -39,11 +39,13 @@ namespace GiftingToDo
             containerRegistry.RegisterForNavigation<AddPersonView, AddPersonViewModel>();
             containerRegistry.RegisterForNavigation<AddGiftView, AddGiftViewModel>();
             containerRegistry.RegisterForNavigation<CompletedListView, CompletedListViewModel>();
+            containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
 
             //this is the interfaces that will be used.
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();
             containerRegistry.RegisterSingleton<IGiftingService, GiftingService>();
             containerRegistry.RegisterSingleton<IShare, ShareImplementation>();
+            containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
             containerRegistry.RegisterSingleton<ICypher, Cypher>();
         }
 

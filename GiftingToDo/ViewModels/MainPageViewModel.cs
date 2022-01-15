@@ -89,7 +89,7 @@ namespace GiftingToDo.ViewModels
         private async Task DeleteReciever(object reciever)
         {
             var val = Convert.ToInt32(reciever);
-            await this.giftService.RemoveRecieverAsync(val);
+            await this.giftService.SetRecieverAsDeleted(val);
             await PopulateData();
         }
 
