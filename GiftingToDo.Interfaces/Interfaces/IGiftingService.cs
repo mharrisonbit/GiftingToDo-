@@ -10,6 +10,7 @@ namespace GiftingToDo.Interfaces.Interfaces
         Task<bool> AddReceiverAsync(Receiver reciever);
         Task<string> CreateJsonForExport(Receiver reciever);
         Task<List<Receiver>> GetAllDeletedReciversAsync();
+        Task<List<Gift>> GetAllGiftsForUser(int id);
         Task<List<Gift>> GetAllGiftsInDataBase();
         Task<List<Receiver>> GetAllReciversAsync();
         Task<List<Receiver>> GetCompeletedReciversAsync();

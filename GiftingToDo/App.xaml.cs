@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GiftingToDo.Helpers;
 using GiftingToDo.Interfaces.Implementations;
 using GiftingToDo.Interfaces.Interfaces;
@@ -22,8 +23,9 @@ namespace GiftingToDo
         {
             InitializeComponent();
             await CheckCurrentDb();
+            Preferences.Set("WasPurchased", true);
 
-            var result = await NavigationService.NavigateAsync("NavigationPage/TabbedView?selectedTab=MainPage");
+            var result = await NavigationService.NavigateAsync("NavigationPage/TabbedView?selectedTab=UncompletedListView");
 
             if (!result.Success)
             {
@@ -35,11 +37,12 @@ namespace GiftingToDo
         {
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<TabbedView, TabbedViewModel>();
-            containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
+            //containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<AddPersonView, AddPersonViewModel>();
             containerRegistry.RegisterForNavigation<AddGiftView, AddGiftViewModel>();
             containerRegistry.RegisterForNavigation<CompletedListView, CompletedListViewModel>();
             containerRegistry.RegisterForNavigation<SettingsView, SettingsViewModel>();
+            containerRegistry.RegisterForNavigation<UncompletedListView, UncompletedListViewModel>();
 
             //this is the interfaces that will be used.
             containerRegistry.RegisterSingleton<IErrorHandler, ErrorHandler>();

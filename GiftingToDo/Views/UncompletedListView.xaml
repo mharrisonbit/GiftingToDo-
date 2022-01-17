@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="GiftingToDo.Views.UncompletedListView"
+    xmlns:prism="http://prismlibrary.com"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Name="NeedToShopList"
+    Title="Needed">
+    <Grid RowDefinitions="60, *">
+        <CollectionView Grid.Row="0"
+                        ItemsSource="{Binding ListOfNames}"
+                        HorizontalOptions="CenterAndExpand"
+                        SelectionMode="Single"
+                        SelectionChangedCommand="{Binding CurrentSelectedPersonCmd}"
+                        SelectionChangedCommandParameter="{Binding Source={RelativeSource Self}, Path=SelectedItem}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal"
+                                   ItemSpacing="20"
+                                   SnapPointsType="MandatorySingle"
+                                   SnapPointsAlignment="Center" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame CornerRadius="10">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroupList>
+                                <VisualStateGroup>
+                                <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <!--<Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=BackgroundColor}"/>-->
+                                            <Setter Property="BackgroundColor" Value="Pink"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Normal">
+                                        <VisualState.Setters>
+                                            <!--<Setter Property="BackgroundColor" Value="{Binding Source={RelativeSource Self}, Path=BackgroundColor}"/>-->
+                                            <Setter Property="BackgroundColor" Value="Purple"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateGroupList>
+                        </VisualStateManager.VisualStateGroups>
+                        <StackLayout Orientation="Horizontal"
+                                     HorizontalOptions="CenterAndExpand">
+                            <Label Text="{Binding FirstName}"/>
+                            <Label Text="{Binding LastName}"/>
+                        </StackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <StackLayout BindableLayout.ItemsSource="{Binding ListOfGifts}"
+                     Orientation="Vertical"
+                     Margin="20,0,0,0"
+                     BackgroundColor="Transparent"
+                     Grid.Row="1">
+            <BindableLayout.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="50*, 50*"
+                            RowDefinitions="20, 20, *"
+                            BackgroundColor="Transparent">
+                        <Label Text="{Binding ItemDescription}"
+                                Grid.Row="0"
+                                Grid.Column="0"/>
+                        <Label Text="Purchased"
+                                Grid.Row="0"
+                                Grid.Column="1"
+                                HorizontalOptions="CenterAndExpand"/>
+                        <CheckBox IsChecked="{Binding ItemPurchased}"
+                                    Grid.Row="0"
+                                    Grid.Column="1"
+                                    HorizontalOptions="EndAndExpand"
+                                    Color="Blue">
+                            <CheckBox.Behaviors>
+                                <prism:EventToCommandBehavior EventName="CheckedChanged"
+                                                                Command="{Binding Source={x:Reference NeedToShopList}, Path=BindingContext.ItemPurchasedCheck}"
+                                                                CommandParameter="{Binding .}"/>
+                            </CheckBox.Behaviors>
+                        </CheckBox>
+                    </Grid>
+                </DataTemplate>
+            </BindableLayout.ItemTemplate>
+        </StackLayout>
+    </Grid>
+</ContentPage>

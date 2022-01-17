@@ -11,7 +11,7 @@
             xmlns:local="clr-namespace:GiftingToDo.Views"
             x:Class="GiftingToDo.Views.TabbedView">
     <TabbedPage.Children>
-        <local:MainPage/>
+        <local:UncompletedListView/>
         <local:CompletedListView/>
         <local:SettingsView/>
     </TabbedPage.Children>

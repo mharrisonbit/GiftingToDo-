@@ -8,19 +8,28 @@ using GiftingToDo.Models;
 using Newtonsoft.Json;
 using SQLite;
 using Xamarin.Essentials;
+using Xamarin.Essentials.Interfaces;
 
 namespace GiftingToDo.Interfaces.Implementations
 {
     public class GiftingService : IGiftingService
     {
-        private readonly IErrorHandler errorHandler;
+        public SQLiteAsyncConnection _db { get; private set; }
 
-        public GiftingService(IErrorHandler errorHandler)
+        private readonly IErrorHandler errorHandler;
+        private readonly IPreferences preferences;
+
+        public GiftingService(IErrorHandler errorHandler/*, IPreferences preferences*/)
         {
             this.errorHandler = errorHandler;
+            //this.preferences = preferences;
+            //if (this.preferences.Get("WasPurchased", false))
+            //{
+            //    collectionLimit = -1;
+            //}
         }
 
-        public SQLiteAsyncConnection _db { get; private set; }
+        private static int collectionLimit = 5;
 
         async Task Init()
         {
@@ -174,7 +183,7 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 await Init();
 
-                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == true && x.IsDeleted == false).ToListAsync();
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == true && x.IsDeleted == false).Take(collectionLimit).ToListAsync();
                 foreach (var reciever in recievers)
                 {
                     List<Gift> giftsList = await GetAllGiftsForRecieverAsync(reciever.Id);
@@ -205,7 +214,7 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 await Init();
 
-                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == false && x.IsDeleted == false).ToListAsync();
+                var recievers = await _db.Table<Receiver>().Where(x => x.IsComplete == false && x.IsDeleted == false).Take(collectionLimit).ToListAsync();
 
                 foreach (var reciever in recievers)
                 {
@@ -374,6 +383,26 @@ namespace GiftingToDo.Interfaces.Implementations
             {
                 this.errorHandler.PrintErrorMessage(ex);
             }
+        }
+
+        /// <summary>
+        /// This is going to get all the gifts for the user id that was provided to the method.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>List<Gift></Gift></returns>
+        public async Task<List<Gift>> GetAllGiftsForUser(int id)
+        {
+            List<Gift> allUsersGifts = new List<Gift>();
+            try
+            {
+                allUsersGifts = await _db.Table<Gift>().Where(x => x.ReceiverId == id).ToListAsync();
+
+            }
+            catch (Exception ex)
+            {
+                this.errorHandler.PrintErrorMessage(ex);
+            }
+            return allUsersGifts;
         }
 
         /// <summary>

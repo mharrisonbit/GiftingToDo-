@@ -5,5 +5,7 @@ namespace GiftingToDo.Helpers
     {
         public const double DefaultDbVersion = 0.0;
         public const double CurrentDBVersion = 0.1;
+
+        public const double FreeVersonLimit = 5;
     }
 }
