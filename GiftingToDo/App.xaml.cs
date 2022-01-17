@@ -22,7 +22,7 @@ namespace GiftingToDo
         protected override async void OnInitialized()
         {
             InitializeComponent();
-            await CheckCurrentDb();
+            //await CheckCurrentDb();
             Preferences.Set("WasPurchased", true);
 
             var result = await NavigationService.NavigateAsync("NavigationPage/TabbedView?selectedTab=UncompletedListView");

@@ -1,13 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<ContentPage
-    xmlns="http://xamarin.com/schemas/2014/forms"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="GiftingToDo.Views.UncompletedListView"
-    xmlns:prism="http://prismlibrary.com"
-    prism:ViewModelLocator.AutowireViewModel="True"
-    x:Name="NeedToShopList"
-    Title="Needed">
-    <Grid RowDefinitions="60, *">
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GiftingToDo.Views.UncompletedListView"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             x:Name="NeedToShopList"
+             Title="Needed">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add Person"
+                     Order="Primary"
+                     Priority="0"
+                     Command="{Binding AddPersonBtn}"/>
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="60, *, 60"
+          Margin="20">
         <CollectionView Grid.Row="0"
                         ItemsSource="{Binding ListOfNames}"
                         HorizontalOptions="CenterAndExpand"
@@ -58,8 +64,8 @@
             <BindableLayout.ItemTemplate>
                 <DataTemplate>
                     <Grid ColumnDefinitions="50*, 50*"
-                            RowDefinitions="20, 20, *"
-                            BackgroundColor="Transparent">
+                          RowDefinitions="20, 20, *"
+                          BackgroundColor="Transparent">
                         <Label Text="{Binding ItemDescription}"
                                 Grid.Row="0"
                                 Grid.Column="0"/>
@@ -68,10 +74,10 @@
                                 Grid.Column="1"
                                 HorizontalOptions="CenterAndExpand"/>
                         <CheckBox IsChecked="{Binding ItemPurchased}"
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    HorizontalOptions="EndAndExpand"
-                                    Color="Blue">
+                                  Grid.Row="0"
+                                  Grid.Column="1"
+                                  HorizontalOptions="EndAndExpand"
+                                  Color="Blue">
                             <CheckBox.Behaviors>
                                 <prism:EventToCommandBehavior EventName="CheckedChanged"
                                                                 Command="{Binding Source={x:Reference NeedToShopList}, Path=BindingContext.ItemPurchasedCheck}"
@@ -82,5 +88,28 @@
                 </DataTemplate>
             </BindableLayout.ItemTemplate>
         </StackLayout>
+        <Grid Grid.Row="2"
+              ColumnDefinitions="33*, 33*, 33*"
+              IsVisible="{Binding RecieverBtnsVisable}">
+            <Button Grid.Column="0"
+                    Text="Add Gift"
+                    BorderColor="Black"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    Command="{Binding AddGiftCmd}"/>
+            <Button Grid.Column="1"
+                    Text="Share"
+                    BorderColor="Black"
+                    BackgroundColor="Black"
+                    TextColor="White"
+                    Command="{Binding ShareItemCmd}"/>
+            <Button Grid.Column="2"
+                    Text="Remove Person"
+                    FontSize="Micro"
+                    BorderColor="Black"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Command="{Binding RemovePersonCmd}"/>
+        </Grid>
     </Grid>
 </ContentPage>

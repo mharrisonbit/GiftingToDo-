@@ -131,7 +131,7 @@
                                             TextColor="White"
                                             Command="{Binding Source={x:Reference RecieverListView}, Path=BindingContext.RemovePersonCmd}"
                                             CommandParameter="{Binding Id}"/>
-                                 </Grid>
+                                </Grid>
                             </Grid>
                         </yummy:PancakeView>
                     </DataTemplate>
